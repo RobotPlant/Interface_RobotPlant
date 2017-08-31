@@ -10,6 +10,10 @@ http://aprendendo-javafx.blogspot.com.br/2012/08/controles-basicos-de-interface-
 
 http://aprendendo-javafx.blogspot.com.br/2012/08/controles-basicos-de-interface-iii.html
 
+Exemplos de interfaces:
+
+https://github.com/eppleton/javafxbuch
+
 FXML:
 
 http://aprendendo-javafx.blogspot.com.br/2014/03/introducao-ao-fxml-criando-interfaces.html
