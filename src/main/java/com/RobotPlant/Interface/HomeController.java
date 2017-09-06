@@ -11,88 +11,93 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import jssc.SerialPort;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
-public class HomeController implements EventHandler, Initializable {
-
-	@FXML
-	TabPane tabpane = new TabPane();
-
-	@FXML
-	Tab tabDados = new Tab();
-
-	@FXML
-	Tab tabGrafico = new Tab();
+public class HomeController implements Initializable {
 
 
-	ObservableList<String> items = FXCollections.observableArrayList();
-	@FXML
-	ListView<String> lvDados = new ListView<>(items);
+    @FXML
+    private ResourceBundle resources;
 
-	//@FXML
-	//LineChart lcGrafico= new LineChart<>();
+    @FXML
+    private URL location;
 
-	final NumberAxis xAxis = new NumberAxis();
+    @FXML
+    private Button btnStatus;
 
-    final NumberAxis yAxis = new NumberAxis();
+    @FXML
+    private Button btnHistorico;
 
-    final LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis,yAxis);
+    @FXML
+    private Button btnConfig;
 
+    @FXML
+    private Button btnControl;
 
-    public void MostraDadosList(ActionEvent event) {
+    @FXML
+    private Button btnPlantation;
 
-    	lvDados.getSelectionModel().selectedItemProperty().addListener(
-                (ObservableValue<? extends String> ov, String old_val,
-                        String new_val) -> {
-                        	for(int i = 0;i<10000; i++)
-                        		System.out.println(i);
+    @FXML
+    private Button btnFechar;
 
-                });
-    }
+    @FXML
+    private AreaChart<Number, Number> areachart;
 
-    public void MostraDadosGrafico(ActionEvent event) {
+    @FXML
+    private BarChart<String, Number> linechart;
 
-    	xAxis.setLabel("Number of Month");
+    @FXML
+    private ListView<?> lvDadosEventos;
 
-    	lineChart.setTitle("Stock Monitoring, 2010");
-        //defining a series
-        XYChart.Series series = new XYChart.Series();
-        series.setName("My portfolio");
-        //populating the series with data
-        series.getData().add(new XYChart.Data(1, 23));
-        series.getData().add(new XYChart.Data(2, 14));
-        series.getData().add(new XYChart.Data(3, 15));
-        series.getData().add(new XYChart.Data(4, 24));
-        series.getData().add(new XYChart.Data(5, 34));
-        series.getData().add(new XYChart.Data(6, 36));
-        series.getData().add(new XYChart.Data(7, 22));
-        series.getData().add(new XYChart.Data(8, 1000));
-        series.getData().add(new XYChart.Data(9, 43));
-        series.getData().add(new XYChart.Data(10, 17));
-        series.getData().add(new XYChart.Data(11, 29));
-        series.getData().add(new XYChart.Data(12, 25));
+    @FXML
+    private DatePicker dpData;
 
-        lineChart.getData().add(series);
-    }
-
-	@Override
-	public void handle(Event arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
+    @FXML
+    private Button btnBuscar;
+    @FXML
+    CategoryAxis  xAxis;
+    @FXML
+    NumberAxis yAxis;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
+
+
+		 //linechart = new BarChart<String, Number>(xAxis, yAxis);
+		 xAxis.setLabel("Hora");
+		 yAxis.setLabel("Temperatura");
+
+		 XYChart.Series series1 = new XYChart.Series();
+		 series1.setName("Histograma");
+		 series1.getData().add(new XYChart.Data("1", 10));
+	     series1.getData().add(new XYChart.Data("2", 4));
+	     series1.getData().add(new XYChart.Data("15" , 70));
+	     series1.getData().add(new XYChart.Data("4", 10));
+	     series1.getData().add(new XYChart.Data("7", 4));
+	     series1.getData().add(new XYChart.Data("78" , 70));
+	     series1.getData().add(new XYChart.Data("8", 10));
+	     series1.getData().add(new XYChart.Data("20", 4));
+	     series1.getData().add(new XYChart.Data("150" , 70));
+	     series1.getData().add(new XYChart.Data("47", 10));
+	     series1.getData().add(new XYChart.Data("78", 4));
+	     series1.getData().add(new XYChart.Data("782" , 70));
+
+		 linechart.getData().add(series1);
+
 
 	}
+
 
 
 }
