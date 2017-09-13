@@ -1,4 +1,5 @@
 # Interface_RobotPlant
+<a href="https://codebeat.co/projects/github-com-juniorec-interface_robotplant-master"><img alt="codebeat badge" src="https://codebeat.co/badges/23c023f3-44f4-4dc6-85fc-6824a427d327" /></a>
 
 Arquivos em java da interface a qual disponibilizara os dados coletados do banco de dados.
 
