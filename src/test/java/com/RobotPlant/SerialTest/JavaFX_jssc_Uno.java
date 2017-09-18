@@ -94,7 +94,10 @@ public class JavaFX_jssc_Uno extends Application {
                     try {
 
                         byte[] b = serialPort.readBytes();
+                        System.out.println(b);
                         int value = b[0] & 0xff;    //convert to int
+                        int[] c = serialPort.readIntArray();
+                        System.out.println(value+"Teste"+ c.toString());
                         String st = String.valueOf(value);
 
 

@@ -64,7 +64,7 @@ public class Home extends Application {
 		 anchorPane.prefHeight(600);
 		 anchorPane.setLayoutX(0);
 		 anchorPane.setLayoutY(0);
-		 
+
 		 Pane pane = new Pane();
 		 pane.prefWidth(800);
 		 pane.prefHeight(600);
@@ -133,6 +133,7 @@ public class Home extends Application {
 
 
 		 MenuBar menuBar = new MenuBar();
+		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
 		 menuBar.setLayoutX(0);
@@ -145,7 +146,7 @@ public class Home extends Application {
 		 Menu help = new Menu();
 		 help.setText("Ajuda");
 		 menuBar.getMenus().addAll(file,edit,help);
-		 
+
 		 ArduinoSC arduinoSC = new ArduinoSC();
 		 //arduinoSC.DetectaPorta();
 		 final ComboBox comboBoxPorts = new ComboBox(arduinoSC.DetectaPorta());
@@ -153,34 +154,33 @@ public class Home extends Application {
 		 comboBoxPorts.setLayoutX(175);
 		 comboBoxPorts.setLayoutY(329);
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
-			 
+
 			 @Override
 			 public void changed(ObservableValue<? extends String> observable, String oldValue,
 					 String newValue) {
 				 System.out.println(newValue);
 				 arduinoSC.DisconectaArduino();
 				// arduinoSC.SerialConnection(newValue, series1);
-				 
+
 				 Animation(lineChart, series1, arduinoSC.SerialConnection(newValue, series1));
-				 
-				 
+
+
 			 }
-			 
-			 
+
+
 		 });
-		 
-		 
+
 		 Button btnStatus = new Button();
 		 btnStatus.setText("Status");
 		 btnStatus.setLayoutX(14);
 		 btnStatus.setLayoutY(62);
 		 btnStatus.getStyleClass().setAll("btn","btn-success");
 		 btnStatus.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 Status status = new Status();
-				 
+
 				 try {
 					 status.start(palco);
 				 } catch (Exception e) {
@@ -188,18 +188,18 @@ public class Home extends Application {
 				 }
 			 }
 		 });
-		 
+
 		 Button btnHistorico = new Button();
 		 btnHistorico.setText("Histórico");
 		 btnHistorico.setLayoutX(175);
 		 btnHistorico.setLayoutY(62);
 		 btnHistorico.getStyleClass().setAll("btn","btn-success");
 		 btnHistorico.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 Historico historico = new Historico();
-				 
+
 				 try {
 					 historico.start(palco);
 				 } catch (Exception e) {
@@ -207,18 +207,18 @@ public class Home extends Application {
 				 }
 			 }
 		 });
-		 
+
 		 Button btnReport = new Button();
 		 btnReport.setText("Relatórios");
 		 btnReport.setLayoutX(14);
 		 btnReport.setLayoutY(151);
 		 btnReport.getStyleClass().setAll("btn","btn-success");
 		 btnReport.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 Report report = new Report();
-				 
+
 				 try {
 					 report.start(palco);
 				 } catch (Exception e) {
@@ -226,18 +226,18 @@ public class Home extends Application {
 				 }
 			 }
 		 });
-		 
+
 		 Button btnGrafico = new Button();
 		 btnGrafico.setText("Gráficos");
 		 btnGrafico.setLayoutX(175);
 		 btnGrafico.setLayoutY(151);
 		 btnGrafico.getStyleClass().setAll("btn","btn-success");
 		 btnGrafico.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 ChartGrid chartGrid = new ChartGrid();
-				 
+
 				 try {
 					 chartGrid.start(palco);
 				 } catch (Exception e) {
@@ -245,18 +245,18 @@ public class Home extends Application {
 				 }
 			 }
 		 });
-		 
+
 		 Button btnPlantation = new Button();
 		 btnPlantation.setText("Plantation");
 		 btnPlantation.setLayoutX(14);
 		 btnPlantation.setLayoutY(240);
 		 btnPlantation.getStyleClass().setAll("btn","btn-success");
 		 btnPlantation.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 Plantation plantation = new Plantation();
-				 
+
 				 try {
 					 plantation.start(palco);
 				 } catch (Exception e) {
@@ -264,20 +264,20 @@ public class Home extends Application {
 				 }
 			 }
 		 });
-		 
+
 		 Button btnAddControl = new Button();
 		 btnAddControl.setText("Controle");
 		 btnAddControl.setLayoutX(175);
 		 btnAddControl.setLayoutY(240);
 		 btnAddControl.getStyleClass().setAll("btn","btn-success");
 		 btnAddControl.setOnAction(new EventHandler<ActionEvent>() {
-			 
+
 			 public void handle(ActionEvent event) {
-				 
+
 				 AddControl addControl = new AddControl();
-				 
+
 				 try {
-					 addControl.start(palco);           	  	
+					 addControl.start(palco);
 				 } catch (Exception e) {
 					 e.printStackTrace();
 				 }
@@ -310,18 +310,18 @@ public class Home extends Application {
 
 		  Scene cena = new Scene(anchorPane, 800, 600);
 
-		  cena.getStylesheets().add("bootstrapfx.css");
+		  cena.getStylesheets().addAll("com/robotplant/interface/application.css","bootstrapfx.css");
 
 
-		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/icon.png")));
+		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/plant-icon-34784.png")));
 		  palco.setTitle("RobotPlant - 0.1 ");
 		  palco.setResizable(false);
 		  palco.setScene(cena);
 		  palco.show();
-		  
-		
 
-	        
+
+
+
 	 }
 	 private void prepareData() {
 	        for (int i = 0; i < 8; i++) {
@@ -329,7 +329,7 @@ public class Home extends Application {
 	        }
 	    }
 	 public void Animation(LineChart lineChart, XYChart.Series series1, int group[]) {
-		 
+
 		//Apply Animating Data in Charts
 	        //ref: http://docs.oracle.com/javafx/2/charts/bar-chart.htm
 	        //"Animating Data in Charts" section

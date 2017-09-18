@@ -2,6 +2,7 @@ package com.RobotPlant.ArduinoUtil;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -29,14 +30,13 @@ public class ArduinoSC {
 	ObservableList<String> portList;
 	int i = 0;
 	int group[] = new int[10];
-	
+
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public int[] SerialConnection(String port, XYChart.Series series1) {
 
 		SerialPort serialPort = new SerialPort(port);
 		boolean success = false;
-		
 
 		try {
 
@@ -60,11 +60,11 @@ public class ArduinoSC {
 						byte[] b = serialPort.readBytes();
 						int value = b[0] & 0xff;
 						String st = String.valueOf(value);
-						
+
 						//Update label in ui thread
                         Platform.runLater(() -> {
                         	try {
-                        		
+
                         		if (value <= 10) {
                                     group[0]++;
                                     series1.getData().set(0, new XYChart.Data("0-10", group[0]));
@@ -96,8 +96,8 @@ public class ArduinoSC {
                                     group[9]++;
                                     series1.getData().set(9, new XYChart.Data("10-100", group[9]));
                                 }
-                        		
-                        	
+
+
                         	} catch (NullPointerException e) {
         						System.err.println(i + value );
         					}
@@ -137,7 +137,7 @@ public class ArduinoSC {
 			System.out.println(name);
 			portList.add(name);
 		}
-		
+
 		return portList;
 	}
 
