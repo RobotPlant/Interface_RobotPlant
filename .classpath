@@ -36,5 +36,6 @@
 	<classpathentry kind="lib" path="Libs/com.mysql.jdbc_5.1.5.jar"/>
 	<classpathentry kind="lib" path="Libs/jssc-2.8.0.jar"/>
 	<classpathentry kind="lib" path="Libs/mysql-connector-java-5.1.42-bin.jar"/>
+	<classpathentry kind="lib" path="Libs/log4j.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
