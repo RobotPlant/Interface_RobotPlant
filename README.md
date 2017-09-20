@@ -6,7 +6,7 @@
  # Bibliografias sugeridas:
  
   
- -- Java:
+ ## Java:
  
  http://www.devdojo.com.br/aula?playlistId=PL62G310vn6nHrMr1tFLNOYP_c73m6nAzL
  
