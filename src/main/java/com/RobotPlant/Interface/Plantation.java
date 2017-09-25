@@ -12,10 +12,10 @@ public class Plantation extends Application {
 	public static void main(String[] args) {
 		  launch();
 		 }
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-			
+
 		AnchorPane anchorPane = new AnchorPane();
 		anchorPane.prefHeight(600);
 		anchorPane.prefWidth(800);
@@ -25,9 +25,9 @@ public class Plantation extends Application {
 		pane.prefHeight(600);
 		pane.setLayoutX(1);
 		pane.setLayoutY(0);
-		
-		
-		
+
+
+
 		pane.getChildren().addAll();
 
 		anchorPane.getChildren().add(pane);
@@ -42,10 +42,10 @@ public class Plantation extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setScene(cena);
 		primaryStage.show();
-		
-		
+
+
 	}
-	
-	
+
+
 
 }

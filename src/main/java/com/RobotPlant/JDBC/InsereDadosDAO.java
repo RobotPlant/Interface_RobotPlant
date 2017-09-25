@@ -1,40 +1,40 @@
 package com.RobotPlant.JDBC;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
-
-import com.RobotPlant.Model.TesteDados;
+import java.text.SimpleDateFormat;
 
 public class InsereDadosDAO {
 
-	public void insertDado(TesteDados dados) throws SQLException {
+	private Connection conn = null;
 
-		Connection conn = new Conexaodb().getConnection();
+
+	@SuppressWarnings({ "static-access", "deprecation" })
+	public void insertDados(String nomeTabela, Double valor) throws SQLException {
+
+		System.out.println("Setando dados");
+		conn = new Conexaodb().getConnection();
 
 		try {
-
-
-			String query = "insert into td_teste_dados(id, 	tipo, valor, hora) values (?, ?, ?, ?)";
+			//Falta adicionar o metodo de busca do ultimo id
+			String query = "insert into tb_"+nomeTabela+"("+nomeTabela+", hora_amostra) values ( ?, CURRENT_TIMESTAMP)";
 
 			PreparedStatement stmt = null;
 
 			stmt = conn.prepareStatement(query);
 
-			stmt.setInt(1, dados.getId());
-			stmt.setString(2, dados.getTipo());
-			stmt.setInt(3, dados.getValor());
-			stmt.setInt(4, dados.getHora());
 
+			stmt.setDouble(1, valor);
+			//stmt.setDate(2, dt);
+
+			System.out.println("Enviando dados db");
 			stmt.execute();
-
+			System.out.println("Dados inseridos");
 			stmt.close();
 
-
-
 		} catch (Exception e) {
-			System.out.println(e);
 			throw new RuntimeException(e);
 		} finally {
 			conn.close();

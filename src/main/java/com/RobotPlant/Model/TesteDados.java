@@ -13,14 +13,13 @@ public class TesteDados implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int 	id;
 	private String	tipo;
-	private int	valor;
-	private int	hora;
+	private double	valor;
+	private Time	hora;
 
 	public TesteDados() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	public TesteDados(int id, String tipo, int valor, int hora) {
+	public TesteDados(int id, String tipo, double valor, Time hora) {
 		super();
 		this.id = id;
 		this.tipo = tipo;
@@ -39,16 +38,16 @@ public class TesteDados implements Serializable {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public int getValor() {
+	public double getValor() {
 		return valor;
 	}
 	public void setValor(int valor) {
 		this.valor = valor;
 	}
-	public int getHora() {
+	public Time getHora() {
 		return hora;
 	}
-	public void setHora(int hora) {
+	public void setHora(Time hora) {
 		this.hora = hora;
 	}
 
@@ -58,7 +57,7 @@ public class TesteDados implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + hora;
+		//result = prime * result + hora;
 		result = prime * result + id;
 		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
 		long temp;

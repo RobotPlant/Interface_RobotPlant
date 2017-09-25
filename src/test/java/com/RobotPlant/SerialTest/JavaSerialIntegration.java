@@ -25,7 +25,7 @@ public class JavaSerialIntegration {
         System.out.println("A has been received");
         // Wait 10 seconds
         System.out.println("Waiting 10 seconds...");
-        Thread.sleep(10000);
+        Thread.sleep(1000000);
 
         System.out.println("Sending 1....");
         // Send text 1
@@ -33,7 +33,7 @@ public class JavaSerialIntegration {
         System.out.println("1 has been received");
         // Wait 10 seconds
         System.out.println("Waiting 10 seconds...");
-        Thread.sleep(10000);
+        Thread.sleep(1000000);
 
         serialPortCom.closeConnection();
         System.out.println("Serial communication has finished");

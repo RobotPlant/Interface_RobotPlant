@@ -1,4 +1,4 @@
-package com.RobotPlant.Interface;
+package com.RobotPlant.Controller;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

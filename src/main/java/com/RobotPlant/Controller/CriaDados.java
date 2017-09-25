@@ -35,7 +35,7 @@ public class CriaDados {
 
 		GregorianCalendar calendar = new GregorianCalendar();
 
-		int hora = 0;
+		Time hora;
 
 		for(int i = 0; i<100; i++) {
 
@@ -53,7 +53,7 @@ public class CriaDados {
 
 			//dados.add(i, testeDados);
 
-			dadosDAO.insertDado(testeDados);
+			dadosDAO.insertDados(nomeTabela, valor);
 
 		}
 

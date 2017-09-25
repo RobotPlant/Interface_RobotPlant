@@ -2,6 +2,7 @@ package com.RobotPlant.Interface;
 
 import static jssc.SerialPort.MASK_RXCHAR;
 
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +10,10 @@ import java.util.logging.Logger;
 import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 import com.RobotPlant.ArduinoUtil.ArduinoSC;
+import com.RobotPlant.JDBC.BuscaDadosDAO;
+import com.RobotPlant.Model.TemperaturaModel;
+import com.RobotPlant.Model.UmidadeArModel;
+import com.RobotPlant.Model.UmidadeSoloModel;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -46,17 +51,24 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 
+@SuppressWarnings("unused")
 public class Home extends Application {
-
+	int i = 0;
 	int group[] = new int[10];
 	SerialPort arduinoPort = null;
 	ObservableList<String> portList;
+	BuscaDadosDAO dadosDAO = null;
+
+	TemperaturaModel temperaturaModel = new TemperaturaModel();;
+	UmidadeArModel arModel = new UmidadeArModel();
+	UmidadeSoloModel soloModel = new UmidadeSoloModel();
 
 	 public static void main(String[] args) {
 	  launch();
 	 }
 
-	 @Override
+	 @SuppressWarnings({ "unchecked", "rawtypes", "unused" })
+	@Override
 	 public void start(final Stage palco) throws Exception {
 
 		 AnchorPane anchorPane = new AnchorPane();
@@ -96,17 +108,27 @@ public class Home extends Application {
 
 		 prepareData();  //Seta os valores do array para 0
 
+		 BuscaDadosDAO dadosDAO = new BuscaDadosDAO();
+
 		 final CategoryAxis xAxis = new CategoryAxis();
 
 		 final NumberAxis yAxis = new NumberAxis();
 
 		 final LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
 		 xAxis.setLabel("Hora");
-		 yAxis.setLabel("Temperatura");
+		 yAxis.setLabel("valor");
 
-		 XYChart.Series series1 = new XYChart.Series();
-		 series1.setName("Histograma");
-		 series1.getData().add(new XYChart.Data("0-10", group[0]));
+		 final XYChart.Series<String, Number> series1 = new XYChart.Series<String, Number>();
+		 series1.setName("temperatura");
+
+		 final XYChart.Series<String, Number> series2 = new XYChart.Series<String, Number>();
+		 series2.setName("umidade ar");
+
+		 final XYChart.Series<String, Number> series3 = new XYChart.Series<String, Number>();
+		 series3.setName("umidade solo");
+
+
+	/*	 series1.getData().add(new XYChart.Data("0-10", group[0]));
 	     series1.getData().add(new XYChart.Data("10-20", group[1]));
 	     series1.getData().add(new XYChart.Data("20-30", group[2]));
 	     series1.getData().add(new XYChart.Data("30-40", group[3]));
@@ -117,8 +139,8 @@ public class Home extends Application {
 	     series1.getData().add(new XYChart.Data("70-80", group[7]));
 	     series1.getData().add(new XYChart.Data("80-90", group[8]));
 	     series1.getData().add(new XYChart.Data("90-100", group[9]));
-
-		 lineChart.getData().addAll(series1);
+*/
+		 lineChart.getData().addAll(series1, series2, series3);
 
 
 		 ChartGrid chartGrid = new ChartGrid();
@@ -133,7 +155,6 @@ public class Home extends Application {
 
 
 		 MenuBar menuBar = new MenuBar();
-		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
 		 menuBar.setLayoutX(0);
@@ -169,6 +190,7 @@ public class Home extends Application {
 
 
 		 });
+
 
 		 Button btnStatus = new Button();
 		 btnStatus.setText("Status");
@@ -310,10 +332,10 @@ public class Home extends Application {
 
 		  Scene cena = new Scene(anchorPane, 800, 600);
 
-		  cena.getStylesheets().addAll("com/robotplant/interface/application.css","bootstrapfx.css");
+		  cena.getStylesheets().add("bootstrapfx.css");
 
 
-		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/plant-icon-34784.png")));
+		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/icon.png")));
 		  palco.setTitle("RobotPlant - 0.1 ");
 		  palco.setResizable(false);
 		  palco.setScene(cena);
@@ -321,14 +343,57 @@ public class Home extends Application {
 
 
 
+		  Timeline animation = new Timeline();
+	        animation.getKeyFrames()
+	                .add(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
 
+	                    public void handle(ActionEvent actionEvent) {
+
+	                   /* 	temperaturaModel = new TemperaturaModel();
+	                    	arModel = new UmidadeArModel();
+	                    	soloModel = new UmidadeSoloModel();
+	                    	*/
+	                    	try {
+	                    		temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
+								arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
+								soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
+								i++;
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+
+	                        series1.getData().add(new XYChart.Data<String, Number>(temperaturaModel.getTemperaturaData().toString(), temperaturaModel.getTemperaturaValor()));
+
+	                        series2.getData().add(new XYChart.Data<String, Number>(arModel.getUmidadeArData().toString(), arModel.getUmidadeArValor()));
+
+	                        series3.getData().add(new XYChart.Data<String, Number>(soloModel.getUmidadeSoloData().toString(), soloModel.getUmidadeSoloValor()));
+
+
+	                        if (series1.getData().size() > 30) {
+	                            series1.getData().remove(0);
+	                        }
+
+	                        if (series2.getData().size() > 30) {
+	                            series2.getData().remove(0);
+	                        }
+
+	                        if (series3.getData().size() > 30) {
+	                        	series3.getData().remove(0);
+	                        }
+	                    }
+	                }));
+	        animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
+	        animation.play();
 	 }
 	 private void prepareData() {
 	        for (int i = 0; i < 8; i++) {
 	            group[i] = 0;
 	        }
 	    }
-	 public void Animation(LineChart lineChart, XYChart.Series series1, int group[]) {
+	 @SuppressWarnings({ "rawtypes", "unchecked", "unused" })
+	public void Animation(LineChart lineChart, XYChart.Series series1, int group[]) {
 
 		//Apply Animating Data in Charts
 	        //ref: http://docs.oracle.com/javafx/2/charts/bar-chart.htm

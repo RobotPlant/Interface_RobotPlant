@@ -1,7 +1,10 @@
 package com.RobotPlant.SerialTest;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.RobotPlant.JDBC.InsereDadosDAO;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -11,14 +14,16 @@ import jssc.SerialPortEventListener;
 
 		int i = 0;
 
-		boolean teste = false;
+		String teste = "";
 
 		private String regra = "";
 		private String nome = "";
 
-		Double valor[] = new Double[4];
-
+		String [] valor = new String[6];
+		Double [] dado = new Double[6];
+		StringBuffer strbuff = new StringBuffer("");
 		ModeloTeste modeloTeste = new ModeloTeste();
+		InsereDadosDAO dadosDAO = new InsereDadosDAO();
 
 		List<ModeloTeste> modeloTestes = new ArrayList<ModeloTeste>();
 
@@ -34,63 +39,97 @@ import jssc.SerialPortEventListener;
 	        if (event.isRXCHAR()) {
 
 	            try {
-	                byte[] buffer = serialPort.readBytes(1);
+		            byte[] buffer = serialPort.readBytes(1);
+		            nome += new String(buffer);
+		            System.out.println(nome);
+		            strbuff.append(nome);
+		            nome = "";
 
+	            	Thread.sleep(100);
+	            	System.out.println(strbuff.toString());
+	                if(strbuff.toString().equals("Temperatura:") || strbuff.toString().equals("Umidade_solo:")
+	                		|| strbuff.toString().equals("Umidade_ar:")) {
 
-	                nome += new String(buffer);
-	               // System.out.println(buffer);
-	                //System.out.print(new String(buffer));
-	                System.out.println(nome);
-
-
-	                if(nome.equals("Temperatura") || teste) {
-
-	                	if (regra.equals("Temperatura")) {
-
-
-	                		valor[i] = Double.valueOf(nome);
-
-
-
-	                		if(i>3) {
-	                			modeloTeste.setTempvalue(Double.valueOf(nome));
-	                			i=0;
-	                		}
-
-	                		i++;
-
+	                	for(int i = 0; i<6 ; i++) {
+	                		byte[] temp = serialPort.readBytes(1);
+	                		nome += new String(temp);
+			                Thread.sleep(1000);
+			                
+			                if(nome.equals("\r\n") || nome.equals(" ")) {
+			                	for(int j = 0; j < 6; j++) {
+			                		byte[] usb = serialPort.readBytes(1);
+			                		nome += new String(usb);
+			                		Thread.sleep(1000);
+			                		if(nome.equals("n") || nome.equals("a") || nome.equals("n") ||nome.equals("\r") || nome.equals("\n")) {
+			                			nome = "";
+			                		} else {
+			                			valor[j] = nome;
+			                			nome = "";
+			                		}
+			                		
+			                		
+			                	}
+			                	if(valor.length > 0) {
+			                		for (int k = 0; k < valor.length; k++) {
+			                			teste += String.valueOf(valor[k]).replaceAll("null", "0");
+			                			Thread.sleep(1000);
+			                		}
+			                		System.out.println("Preparando e enviando dados");
+			                		this.verificaValor(strbuff.toString().replace(":", ""), Double.valueOf(teste));
+			                		teste = "";
+			                		Thread.sleep(1000);
+			                	}
+			                	strbuff = new StringBuffer("");
+			                	nome = "";
+			                	i=7;			                	
+			                }
 	                	}
-
-	                	if (nome.equals("Temperatura")) {
-
-	                		modeloTeste.setTemperatura(nome);
-	                		regra = nome;
-
-	                	}
-
-
-
-	                	nome = "";
 	                }
-
-	                if(nome.equals("\r\nnan\r\n")) {
-	                	nome = "";
-	                	teste = false;
-
+	                if(strbuff.toString().equals("\r\n") || strbuff.toString().equals("\n") || strbuff.toString().equals("\r")) {
+	                	strbuff =  new StringBuffer("");;
 	                }
-
-	                if(nome.equals("\r\n")) {
-	                	nome = "";
-	                	teste = true;
-	                }
-
-	               // Float valor = Float.parseFloat(new String(buffer));
-	                //System.out.println(nome + " "+ valor);
-
 	            } catch (Exception e) {
 	                e.printStackTrace();
+	                nome = "";
 	            }
 	        }
+	    }
+
+	    public void verificaValor(String nome, Double valor) {
+	    	
+	    	if (nome.equals("Temperatura")) {
+	    		modeloTeste.setTemperatura(nome);
+	            modeloTeste.setTempvalue(valor);
+	            try {
+	            	Thread.sleep(1000);
+					dadosDAO.insertDados(nome, valor);
+				} catch (SQLException | InterruptedException e) {
+					e.printStackTrace();
+				}
+	    		
+	    	} else if (nome.equals("Umidade_solo")) {
+	    		modeloTeste.setUmidadeSolo(nome);
+	            modeloTeste.setSoloValue(valor);
+	            try {
+	            	Thread.sleep(1000);
+					dadosDAO.insertDados(nome, valor);
+				} catch (SQLException | InterruptedException e) {
+					e.printStackTrace();
+				}
+	    		
+	    	} else if (nome.equals("Umidade_ar")) {
+	    		modeloTeste.setUmidadeAr(nome);
+	            modeloTeste.setArValue(valor);
+	            try {
+	            	Thread.sleep(1000);
+					dadosDAO.insertDados(nome, valor);
+				} catch (SQLException | InterruptedException e) {
+					e.printStackTrace();
+				}
+	    	} else {
+	    		System.out.println("String inválida!!!");
+	    	}
+	    	strbuff = new StringBuffer("");
 	    }
 	}
 
