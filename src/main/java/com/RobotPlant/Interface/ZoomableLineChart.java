@@ -1,4 +1,5 @@
 package com.RobotPlant.Interface;
+
 import java.util.Collections;
 import java.util.Random;
 
@@ -27,6 +28,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 
 public class ZoomableLineChart extends Application {
 
@@ -162,5 +164,4 @@ public class ZoomableLineChart extends Application {
         zoomRect.setWidth(0);
         zoomRect.setHeight(0);
     }
-
 }

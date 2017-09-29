@@ -1,5 +1,6 @@
 package com.RobotPlant.SerialTest;
 
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ import jssc.SerialPortEventListener;
 	                		byte[] temp = serialPort.readBytes(1);
 	                		nome += new String(temp);
 			                Thread.sleep(1000);
-			                
+
 			                if(nome.equals("\r\n") || nome.equals(" ")) {
 			                	for(int j = 0; j < 6; j++) {
 			                		byte[] usb = serialPort.readBytes(1);
@@ -66,8 +67,8 @@ import jssc.SerialPortEventListener;
 			                			valor[j] = nome;
 			                			nome = "";
 			                		}
-			                		
-			                		
+
+
 			                	}
 			                	if(valor.length > 0) {
 			                		for (int k = 0; k < valor.length; k++) {
@@ -81,7 +82,7 @@ import jssc.SerialPortEventListener;
 			                	}
 			                	strbuff = new StringBuffer("");
 			                	nome = "";
-			                	i=7;			                	
+			                	i=7;
 			                }
 	                	}
 	                }
@@ -96,7 +97,7 @@ import jssc.SerialPortEventListener;
 	    }
 
 	    public void verificaValor(String nome, Double valor) {
-	    	
+
 	    	if (nome.equals("Temperatura")) {
 	    		modeloTeste.setTemperatura(nome);
 	            modeloTeste.setTempvalue(valor);
@@ -106,7 +107,7 @@ import jssc.SerialPortEventListener;
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
-	    		
+
 	    	} else if (nome.equals("Umidade_solo")) {
 	    		modeloTeste.setUmidadeSolo(nome);
 	            modeloTeste.setSoloValue(valor);
@@ -116,7 +117,7 @@ import jssc.SerialPortEventListener;
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
-	    		
+
 	    	} else if (nome.equals("Umidade_ar")) {
 	    		modeloTeste.setUmidadeAr(nome);
 	            modeloTeste.setArValue(valor);

@@ -3,7 +3,11 @@ package com.RobotPlant.Interface;
 import static jssc.SerialPort.MASK_RXCHAR;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,11 +67,12 @@ public class Home extends Application {
 	UmidadeArModel arModel = new UmidadeArModel();
 	UmidadeSoloModel soloModel = new UmidadeSoloModel();
 
+
 	 public static void main(String[] args) {
 	  launch();
 	 }
 
-	 @SuppressWarnings({ "unchecked", "rawtypes", "unused" })
+	 @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	 public void start(final Stage palco) throws Exception {
 
@@ -146,7 +151,7 @@ public class Home extends Application {
 		 ChartGrid chartGrid = new ChartGrid();
 		 final Pos pos = null;
 		 lineChart.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	          @Override public void handle(MouseEvent t) {
+	          public void handle(MouseEvent t) {
 	        	  lineChart.getParent().setMouseTransparent(true);
 	        	  lineChart.toFront();
 	          }
@@ -155,6 +160,7 @@ public class Home extends Application {
 
 
 		 MenuBar menuBar = new MenuBar();
+		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
 		 menuBar.setLayoutX(0);
@@ -168,7 +174,7 @@ public class Home extends Application {
 		 help.setText("Ajuda");
 		 menuBar.getMenus().addAll(file,edit,help);
 
-		 ArduinoSC arduinoSC = new ArduinoSC();
+		 final ArduinoSC arduinoSC = new ArduinoSC();
 		 //arduinoSC.DetectaPorta();
 		 final ComboBox comboBoxPorts = new ComboBox(arduinoSC.DetectaPorta());
 		 comboBoxPorts.setPromptText("Porta");
@@ -176,7 +182,6 @@ public class Home extends Application {
 		 comboBoxPorts.setLayoutY(329);
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
 
-			 @Override
 			 public void changed(ObservableValue<? extends String> observable, String oldValue,
 					 String newValue) {
 				 System.out.println(newValue);
@@ -190,7 +195,6 @@ public class Home extends Application {
 
 
 		 });
-
 
 		 Button btnStatus = new Button();
 		 btnStatus.setText("Status");
@@ -332,16 +336,14 @@ public class Home extends Application {
 
 		  Scene cena = new Scene(anchorPane, 800, 600);
 
-		  cena.getStylesheets().add("bootstrapfx.css");
+		  cena.getStylesheets().addAll("com/robotplant/interface/application.css","bootstrapfx.css");
 
 
-		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/icon.png")));
+		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/plant-icon-34784.png")));
 		  palco.setTitle("RobotPlant - 0.1 ");
 		  palco.setResizable(false);
 		  palco.setScene(cena);
 		  palco.show();
-
-
 
 		  Timeline animation = new Timeline();
 	        animation.getKeyFrames()
@@ -358,17 +360,31 @@ public class Home extends Application {
 								arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
 								soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
 								i++;
+								System.out.println(i);
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 
-
-	                        series1.getData().add(new XYChart.Data<String, Number>(temperaturaModel.getTemperaturaData().toString(), temperaturaModel.getTemperaturaValor()));
-
-	                        series2.getData().add(new XYChart.Data<String, Number>(arModel.getUmidadeArData().toString(), arModel.getUmidadeArValor()));
-
-	                        series3.getData().add(new XYChart.Data<String, Number>(soloModel.getUmidadeSoloData().toString(), soloModel.getUmidadeSoloValor()));
+	                   // 	TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+	                 //       TimeZone tz = TimeZone.getDefault();
+	           //             GregorianCalendar calendario = new GregorianCalendar();
+	                    	//calendario.getInstance(tz);
+	                    	DateFormat format = new SimpleDateFormat("HH:mm:ss");
+	                    	try {
+								if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
+									series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
+								} if (new BuscaDadosDAO().verificaId(i,"umidade_ar")) {
+									series2.getData().add(new XYChart.Data<String, Number>(format.format(arModel.getUmidadeArData()), arModel.getUmidadeArValor()));
+	                    		} if(new BuscaDadosDAO().verificaId(i,"umidade_solo")) {
+									series3.getData().add(new XYChart.Data<String, Number>(format.format(soloModel.getUmidadeSoloData()).toString(), soloModel.getUmidadeSoloValor()));
+	                    		} else {
+	                    			i=1;
+	                    		}
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 
 
 	                        if (series1.getData().size() > 30) {
@@ -386,14 +402,15 @@ public class Home extends Application {
 	                }));
 	        animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
 	        animation.play();
+
 	 }
 	 private void prepareData() {
 	        for (int i = 0; i < 8; i++) {
 	            group[i] = 0;
 	        }
 	    }
-	 @SuppressWarnings({ "rawtypes", "unchecked", "unused" })
-	public void Animation(LineChart lineChart, XYChart.Series series1, int group[]) {
+	 @SuppressWarnings({ "rawtypes", "unchecked" })
+	public void Animation(LineChart lineChart, final XYChart.Series series1, final int group[]) {
 
 		//Apply Animating Data in Charts
 	        //ref: http://docs.oracle.com/javafx/2/charts/bar-chart.htm

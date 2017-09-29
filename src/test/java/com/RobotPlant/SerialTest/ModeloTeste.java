@@ -10,14 +10,12 @@ public class ModeloTeste {
 	private Double soloValue;
 
 
+
 	public void insert(String tipo, String valor) {
 
 
 
 	}
-
-
-
 
 	public ModeloTeste() {
 		super();

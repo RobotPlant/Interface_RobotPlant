@@ -1,12 +1,12 @@
 package com.RobotPlant.Model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class UmidadeArModel implements Serializable {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private double umidadeArValor;
@@ -28,8 +28,8 @@ public class UmidadeArModel implements Serializable {
 	public Date getUmidadeArData() {
 		return umidadeArData;
 	}
-	public void setUmidadeArData(Date umidadeArData) {
-		this.umidadeArData = umidadeArData;
+	public void setUmidadeArData(Date date) {
+		this.umidadeArData = date;
 	}
 	@Override
 	public int hashCode() {
@@ -69,7 +69,7 @@ public class UmidadeArModel implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
+
+
 
 }

@@ -45,15 +45,15 @@ public class CriaDados {
 
 			String dado = tipo[nrAlertorio];
 			valor = random.nextInt()+i;
-			hora = calendar.get(calendar.SECOND);
+			//hora = calendar.get(calendar.SECOND);
 			testeDados.setId(i);
 			testeDados.setTipo(dado);
 			testeDados.setValor(valor);
-			testeDados.setHora(hora);
+	//		testeDados.setHora(hora);
 
 			//dados.add(i, testeDados);
 
-			dadosDAO.insertDados(nomeTabela, valor);
+			//dadosDAO.insertDados(nomeTabela, valor);
 
 		}
 

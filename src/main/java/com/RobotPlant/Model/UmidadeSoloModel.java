@@ -1,12 +1,12 @@
 package com.RobotPlant.Model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class UmidadeSoloModel implements Serializable{
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private double umidadeSoloValor;
@@ -69,7 +69,7 @@ public class UmidadeSoloModel implements Serializable{
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
+
+
 
 }

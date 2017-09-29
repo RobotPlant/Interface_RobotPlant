@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import com.RobotPlant.Model.HistoricoModel;
 import com.RobotPlant.Model.RelacionamentoModel;
@@ -15,165 +21,225 @@ import javafx.collections.ObservableList;
 
 public class BuscaDadosDAO {
 
-	private Connection conn = new Conexaodb().getConnection();
+    private Connection conn = new Conexaodb().getConnection();
 
-	public int buscaUltimoID(String nomeTabela) throws SQLException {
+    public boolean verificaId(int i, String nomeTabela) throws SQLException {
 
-		int idTabela = 0;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
+    	boolean resposta = false;
+    	PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
 
-			String sql = "Select MAX(id_"+nomeTabela+") tb_"+nomeTabela+"";
+            String sql = "Select * from tb_"+nomeTabela+" where (id_"+nomeTabela+")="+i+"";
 
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			while(rs.next()) {
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
 
-				idTabela = (rs.getInt("MAX(id_"+nomeTabela+")"));
+               // rs.getInt("id_"+nomeTabela+"");
+                System.out.println("OK");
+                resposta = true;
+            }
+            stmt.close();
 
-			}
-			stmt.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			conn.close();
-		}
+        return resposta;
+
+    }
+
+    public int buscaUltimoID(String nomeTabela) throws SQLException {
+
+        int idTabela = 0;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+
+            String sql = "Select MAX(id_"+nomeTabela+") tb_"+nomeTabela+"";
+
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+
+                idTabela = (rs.getInt("MAX(id_"+nomeTabela+")"));
+
+            }
+            stmt.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
 
 
 
-		return idTabela;
-	}
+        return idTabela;
+    }
 
-	public TemperaturaModel buscaTemperatura(int i) throws SQLException {
+    public TemperaturaModel buscaTemperatura(int i) throws SQLException {
 
-		TemperaturaModel temperaturaModel = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
+        TemperaturaModel temperaturaModel = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
 
-			String sql = "Select temperatura, hora_amostra from tb_temperatura where id_temperatura = "+i+"";
+        	//String sql = "Select temperatura, hora_amostra from tb_temperatura";
+        	String sql = "Select temperatura, hora_amostra from tb_temperatura where id_temperatura = "+i+"";
 
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			while(rs.next()) {
-				temperaturaModel = new TemperaturaModel();
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                temperaturaModel = new TemperaturaModel();
 
-				temperaturaModel.setTemperaturaValor(rs.getDouble("temperatura"));
-				temperaturaModel.setTemperaturaData(rs.getDate("hora_amostra"));
+                temperaturaModel.setTemperaturaValor(rs.getDouble("temperatura"));
+            	GregorianCalendar calendario = new GregorianCalendar();
+                TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+                TimeZone tz = TimeZone.getDefault();
+        //        calendario.getInstance(tz);
+                calendario.setTime(rs.getTimestamp("hora_amostra"));
+                temperaturaModel.setTemperaturaData(calendario.getTime());
 
-			}
-			stmt.close();
+                DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                System.out.println(df.format(temperaturaModel.getTemperaturaData()));
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			conn.close();
-		}
+            }
+            stmt.close();
 
-		return temperaturaModel;
-	}
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
 
-	public UmidadeSoloModel buscaUmidadeSolo(int i) throws SQLException {
+        return temperaturaModel;
+    }
 
-		UmidadeSoloModel soloModel = new UmidadeSoloModel();
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
+    public UmidadeSoloModel buscaUmidadeSolo(int i) throws SQLException {
 
-			String sql = "Select umidade_solo, hora_amostra from tb_umidade_solo where id_umidade_solo ="+i+"";
 
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			while(rs.next()) {
-				soloModel = new UmidadeSoloModel();
+        UmidadeSoloModel soloModel = new UmidadeSoloModel();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
 
-				soloModel.setUmidadeSoloValor(rs.getInt("umidade_solo"));
-				soloModel.setUmidadeSoloData(rs.getDate("hora_amostra"));
+        	//String sql = "Select umidade, hora_amostra from tb_umidade_solo";
+        	String sql = "Select umidade, hora_amostra from tb_umidade_solo where id_umidade_solo ="+i+"";
 
-			}
-			stmt.close();
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                soloModel = new UmidadeSoloModel();
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			conn.close();
-		}
+                soloModel.setUmidadeSoloValor(rs.getInt("umidade"));
+            	GregorianCalendar calendario = new GregorianCalendar();
+           //     TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+           //     TimeZone tz = TimeZone.getDefault();
+           //     calendario.getInstance(tz);
+                calendario.setTime(rs.getTimestamp("hora_amostra"));
+                soloModel.setUmidadeSoloData(calendario.getTime());
 
-		return soloModel;
-	}
+                DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                System.out.println(df.format(soloModel.getUmidadeSoloData()));
 
-	public UmidadeArModel buscaUmidadeAr(int i) throws SQLException {
+            }
+            stmt.close();
 
-		UmidadeArModel arModel = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
 
-			String sql = "Select umidade_ar, hora_amostra from tb_umidade_ar where id_umidade_ar = "+i+"";
+        return soloModel;
+    }
 
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			while(rs.next()) {
-				arModel = new UmidadeArModel();
+    public UmidadeArModel buscaUmidadeAr(int i) throws SQLException {
 
-				arModel.setUmidadeArValor(rs.getInt("umidade_ar"));
-				arModel.setUmidadeArData(rs.getDate("hora_amostra"));
+        UmidadeArModel arModel = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-			}
-			stmt.close();
+        try {
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			conn.close();
-		}
+        	//String sql = "Select umidade, hora_amostra from tb_umidade_ar";
+            String sql = "Select umidade, hora_amostra from tb_umidade_ar where id_umidade_ar = "+i+"";
 
-		return arModel;
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                arModel = new UmidadeArModel();
 
-	}
+                arModel.setUmidadeArValor(rs.getInt("umidade"));
+                GregorianCalendar calendario = new GregorianCalendar();
+        //        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+        //        TimeZone tz = TimeZone.getDefault();
+       //         calendario.getInstance(tz);
+       //         df.format(calendario);
 
-	public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> data) throws SQLException {
+                calendario.setTime(rs.getTimestamp("hora_amostra"));
+                arModel.setUmidadeArData(calendario.getTime());
+            //	arModel.setUmidadeArData(rs.getTimestamp("hora_amostra"));
+                DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                System.out.println(df.format(arModel.getUmidadeArData()));
 
-		HistoricoModel historicoModel = null;
+            }
+            stmt.close();
 
-		String sql = "SELECT p.tipo_amostra, us.id_umidade_solo, us.umidade_solo,us.hora_amostra FROM tb_planta p " +
-				"inner join tb_dados_key dk on p.id_planta = dk.Planta_id_Planta " +
-				"inner join tb_umidade_solo us on dk.umidade_solo_id_umidade_solo = us.id_umidade_solo;";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
 
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+        return arModel;
 
-		try {
-			stmt = conn.prepareStatement(sql);
+    }
 
-			rs = stmt.executeQuery();
+    public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> data) throws SQLException {
 
-			while(rs.next()) {
-				historicoModel = new HistoricoModel();
+        HistoricoModel historicoModel = null;
 
-				historicoModel.setId(rs.getInt("us.id_umidade_solo"));
-				historicoModel.setTipo("Umidade Solo");
-				historicoModel.setValor(rs.getDouble("us.umidade_solo"));
-				historicoModel.setPlanta(rs.getString("p.tipo_amostra"));
-				historicoModel.setDataAmostra(rs.getDate("us.hora_amostra"));
+        String sql = "SELECT p.tipo_amostra, us.id_umidade_solo, us.umidade_solo,us.hora_amostra FROM tb_planta p " +
+                "inner join tb_dados_key dk on p.id_planta = dk.Planta_id_Planta " +
+                "inner join tb_umidade_solo us on dk.umidade_solo_id_umidade_solo = us.id_umidade_solo;";
 
-				data.add(historicoModel);
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-			}
+        try {
+            stmt = conn.prepareStatement(sql);
 
-			stmt.close();
-			rs.close();
+            rs = stmt.executeQuery();
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			conn.close();
-		}
+            while(rs.next()) {
+                historicoModel = new HistoricoModel();
 
-		return data;
-	}
+                historicoModel.setId(rs.getInt("us.id_umidade_solo"));
+                historicoModel.setTipo("Umidade Solo");
+                historicoModel.setValor(rs.getDouble("us.umidade_solo"));
+                historicoModel.setPlanta(rs.getString("p.tipo_amostra"));
+                historicoModel.setDataAmostra(rs.getDate("us.hora_amostra"));
+
+                data.add(historicoModel);
+
+            }
+
+            stmt.close();
+            rs.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
+
+        return data;
+    }
 
 
 }
