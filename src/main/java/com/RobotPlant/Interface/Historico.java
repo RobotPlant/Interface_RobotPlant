@@ -5,8 +5,6 @@ import java.sql.SQLException;
 
 import com.RobotPlant.JDBC.BuscaDadosDAO;
 import com.RobotPlant.Model.HistoricoModel;
-import com.RobotPlant.Model.RelacionamentoModel;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +32,7 @@ public class Historico extends Application {
 		  launch();
 		 }
 
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -89,26 +88,9 @@ public class Historico extends Application {
 		TableColumn<HistoricoModel, Date> column5 = new TableColumn<HistoricoModel, Date>("Data");
 		column5.setPrefWidth(155);
 		column5.setCellValueFactory(new PropertyValueFactory<HistoricoModel, Date>("dataAmostra"));
-	/*	TableColumn<HistoricoModel, String> column6 = new TableColumn<HistoricoModel, String>("Teste");
-		column6.setPrefWidth(100);
-		column6.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("Teste"));
-		TableColumn<HistoricoModel, String> column7 = new TableColumn<HistoricoModel, String>("Teste");
-		column7.setPrefWidth(100);
-		column7.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("Teste"));
-		TableColumn<HistoricoModel, String> column8 = new TableColumn<HistoricoModel, String>("Teste");
-		column8.setPrefWidth(100);
-		column8.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("Teste"));
-		TableColumn<HistoricoModel, String> column9 = new TableColumn<HistoricoModel, String>("Teste");
-		column9.setPrefWidth(100);
-		column9.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("Teste"));
-		TableColumn<HistoricoModel, String> column10 = new TableColumn<HistoricoModel, String>("Teste");
-		column10.setPrefWidth(100);
-		column10.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("Teste"));
-		TableColumn<HistoricoModel, String> column11 = new TableColumn<HistoricoModel, String>("Teste");
-	*/
 		lvDados.setItems(TablePop());
 
-		lvDados.getColumns().addAll(column1, column2, column3, column4, column5 /*, column6, column7, column8, column9, column10*/);
+		lvDados.getColumns().addAll(column1, column2, column3, column4, column5);
 
 		MenuBar menuBar = new MenuBar();
 		menuBar.prefWidth(800);

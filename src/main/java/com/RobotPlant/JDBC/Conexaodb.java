@@ -9,7 +9,7 @@ public class Conexaodb {
 	public Connection getConnection() {
 	     try {
 
-	         return DriverManager.getConnection("jdbc:mysql://localhost:3306/rp_bd?useTimezone=true&serverTimezone=UTC", "root", "");
+	         return DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb?useTimezone=true&serverTimezone=UTC", "root", "");
 
 	     } catch (SQLException e) {
 	         throw new RuntimeException(e);

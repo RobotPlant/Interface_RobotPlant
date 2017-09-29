@@ -5,6 +5,7 @@ import static jssc.SerialPort.MASK_RXCHAR;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.TimeZone;
@@ -76,6 +77,9 @@ public class Home extends Application {
 	@Override
 	 public void start(final Stage palco) throws Exception {
 
+		 TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
+     	 Calendar.getInstance(TimeZone.getDefault());
+
 		 AnchorPane anchorPane = new AnchorPane();
 		 anchorPane.prefWidth(800);
 		 anchorPane.prefHeight(600);
@@ -132,19 +136,6 @@ public class Home extends Application {
 		 final XYChart.Series<String, Number> series3 = new XYChart.Series<String, Number>();
 		 series3.setName("umidade solo");
 
-
-	/*	 series1.getData().add(new XYChart.Data("0-10", group[0]));
-	     series1.getData().add(new XYChart.Data("10-20", group[1]));
-	     series1.getData().add(new XYChart.Data("20-30", group[2]));
-	     series1.getData().add(new XYChart.Data("30-40", group[3]));
-	     series1.getData().add(new XYChart.Data("40-50", group[4]));
-
-	     series1.getData().add(new XYChart.Data("50-60", group[5]));
-	     series1.getData().add(new XYChart.Data("60-70", group[6]));
-	     series1.getData().add(new XYChart.Data("70-80", group[7]));
-	     series1.getData().add(new XYChart.Data("80-90", group[8]));
-	     series1.getData().add(new XYChart.Data("90-100", group[9]));
-*/
 		 lineChart.getData().addAll(series1, series2, series3);
 
 
@@ -157,7 +148,6 @@ public class Home extends Application {
 	          }
 	      });
 		// chartGrid.setChartGridPos(pos , lineChart);
-
 
 		 MenuBar menuBar = new MenuBar();
 		 menuBar.getStylesheets().add("context-menu");
@@ -190,10 +180,7 @@ public class Home extends Application {
 
 				 Animation(lineChart, series1, arduinoSC.SerialConnection(newValue, series1));
 
-
 			 }
-
-
 		 });
 
 		 Button btnStatus = new Button();
@@ -322,8 +309,6 @@ public class Home extends Application {
 	          }
 	      });
 
-
-
 		  grafico.setContent(lineChart);
 
 		  dados.setContent(lvDados);
@@ -336,8 +321,7 @@ public class Home extends Application {
 
 		  Scene cena = new Scene(anchorPane, 800, 600);
 
-		  cena.getStylesheets().addAll("com/robotplant/interface/application.css","bootstrapfx.css");
-
+		  cena.getStylesheets().addAll(/*"com/robotplant/interface/application.css",*/"bootstrapfx.css");
 
 		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/plant-icon-34784.png")));
 		  palco.setTitle("RobotPlant - 0.1 ");
@@ -348,53 +332,31 @@ public class Home extends Application {
 		  Timeline animation = new Timeline();
 	        animation.getKeyFrames()
 	                .add(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
-
 	                    public void handle(ActionEvent actionEvent) {
-
-	                   /* 	temperaturaModel = new TemperaturaModel();
-	                    	arModel = new UmidadeArModel();
-	                    	soloModel = new UmidadeSoloModel();
-	                    	*/
-	                    	try {
-	                    		temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
-								arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
-								soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
-								i++;
-								System.out.println(i);
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-	                   // 	TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
-	                 //       TimeZone tz = TimeZone.getDefault();
-	           //             GregorianCalendar calendario = new GregorianCalendar();
-	                    	//calendario.getInstance(tz);
+	                    	i++;
 	                    	DateFormat format = new SimpleDateFormat("HH:mm:ss");
 	                    	try {
 								if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
+									temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
 									series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
 								} if (new BuscaDadosDAO().verificaId(i,"umidade_ar")) {
+									arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
 									series2.getData().add(new XYChart.Data<String, Number>(format.format(arModel.getUmidadeArData()), arModel.getUmidadeArValor()));
 	                    		} if(new BuscaDadosDAO().verificaId(i,"umidade_solo")) {
+	                    			soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
 									series3.getData().add(new XYChart.Data<String, Number>(format.format(soloModel.getUmidadeSoloData()).toString(), soloModel.getUmidadeSoloValor()));
 	                    		} else {
 	                    			i=1;
 	                    		}
 							} catch (SQLException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-
-
 	                        if (series1.getData().size() > 30) {
 	                            series1.getData().remove(0);
 	                        }
-
 	                        if (series2.getData().size() > 30) {
 	                            series2.getData().remove(0);
 	                        }
-
 	                        if (series3.getData().size() > 30) {
 	                        	series3.getData().remove(0);
 	                        }
@@ -402,7 +364,6 @@ public class Home extends Application {
 	                }));
 	        animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
 	        animation.play();
-
 	 }
 	 private void prepareData() {
 	        for (int i = 0; i < 8; i++) {

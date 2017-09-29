@@ -3,26 +3,25 @@ package com.RobotPlant.Model;
 import java.sql.Date;
 
 public class HistoricoModel {
-	
+
 	private int id;
 	private String tipo;
 	private double valor;
 	private String planta;
 	private Date dataAmostra;
-	
+
 	public HistoricoModel() {
 		super();
 	}
-	
+
 	public HistoricoModel(int id, String tipo, double valor, String planta, Date dataAmostra) {
-		super();
 		this.id = id;
 		this.tipo = tipo;
 		this.valor = valor;
 		this.planta = planta;
 		this.dataAmostra = dataAmostra;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -112,8 +111,8 @@ public class HistoricoModel {
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
-	
+
+
+
 
 }

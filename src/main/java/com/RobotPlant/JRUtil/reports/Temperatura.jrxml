@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Temperatura" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8c2eee34-19fc-4910-88de-8e47ccb3e1be">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<queryString language="SQL">
+		<![CDATA[Select * from tb_temperatura]]>
+	</queryString>
+	<field name="id_temperatura" class="java.lang.Integer"/>
+	<field name="temperatura" class="java.lang.Double"/>
+	<field name="hora_amostra" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="40" height="40" uuid="f4e57d05-f23f-4a98-bd50-7c2acb6cecda"/>
+				<imageExpression><![CDATA["C:/Users/14208/Pictures/Ícones legais/download.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="40" y="0" width="140" height="30" uuid="b9c14586-6390-4d03-a6b4-63a1e4e52dfb"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[RobotPlant - Teste]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="450" y="0" width="100" height="20" uuid="cbb2face-a15d-41b2-8900-7c973f7bc5da"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="81" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="7" width="100" height="30" uuid="2022d5ca-7d39-4eff-a41e-8e9f5333f26e"/>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="360" y="7" width="100" height="30" uuid="70a06617-2f5c-4570-8677-8a781df93c61"/>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="7" width="100" height="30" uuid="d5b1a4a7-768b-4318-9de0-d2e59974f972"/>
+				<text><![CDATA[Id]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<frame>
+				<reportElement x="2" y="20" width="550" height="40" forecolor="#00FF73" uuid="aa9c7fc4-87bb-4117-b892-d3ba9061ca0b"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textField>
+					<reportElement x="191" y="2" width="100" height="30" uuid="d09d543c-bdbc-4265-82b8-5befa2985d29"/>
+					<textFieldExpression><![CDATA[$F{temperatura}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="361" y="2" width="100" height="30" uuid="fe12aca3-44f0-49d5-92aa-82346fcc453a"/>
+					<textFieldExpression><![CDATA[$F{hora_amostra}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="11" y="1" width="100" height="30" uuid="389e955d-4d6f-457f-af2a-1c414fac5813"/>
+					<textFieldExpression><![CDATA[$F{id_temperatura}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="50" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="67" splitType="Stretch">
+			<textField>
+				<reportElement x="450" y="50" width="100" height="17" uuid="f1a28811-b195-4c69-8cd5-751875645faa"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

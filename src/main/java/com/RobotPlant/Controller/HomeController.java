@@ -1,4 +1,4 @@
-package com.RobotPlant.Interface;
+package com.RobotPlant.Controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
