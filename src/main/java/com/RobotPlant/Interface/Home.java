@@ -64,7 +64,7 @@ public class Home extends Application {
 	ObservableList<String> portList;
 	BuscaDadosDAO dadosDAO = null;
 
-	TemperaturaModel temperaturaModel = new TemperaturaModel();;
+	TemperaturaModel temperaturaModel = new TemperaturaModel();
 	UmidadeArModel arModel = new UmidadeArModel();
 	UmidadeSoloModel soloModel = new UmidadeSoloModel();
 
@@ -150,7 +150,7 @@ public class Home extends Application {
 		// chartGrid.setChartGridPos(pos , lineChart);
 
 		 MenuBar menuBar = new MenuBar();
-		 menuBar.getStylesheets().add("context-menu");
+//		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
 		 menuBar.setLayoutX(0);
@@ -184,10 +184,11 @@ public class Home extends Application {
 		 });
 
 		 Button btnStatus = new Button();
+		 btnStatus.setDisable(true);
 		 btnStatus.setText("Status");
 		 btnStatus.setLayoutX(14);
 		 btnStatus.setLayoutY(62);
-		 btnStatus.getStyleClass().setAll("btn","btn-success");
+		 btnStatus.getStyleClass().setAll("btn","btn-default");
 		 btnStatus.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
@@ -260,10 +261,11 @@ public class Home extends Application {
 		 });
 
 		 Button btnPlantation = new Button();
+		 btnPlantation.setDisable(true);
 		 btnPlantation.setText("Plantation");
 		 btnPlantation.setLayoutX(14);
 		 btnPlantation.setLayoutY(240);
-		 btnPlantation.getStyleClass().setAll("btn","btn-success");
+		 btnPlantation.getStyleClass().setAll("btn","btn-default");
 		 btnPlantation.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
@@ -279,10 +281,11 @@ public class Home extends Application {
 		 });
 
 		 Button btnAddControl = new Button();
+		 btnAddControl.setDisable(true);
 		 btnAddControl.setText("Controle");
 		 btnAddControl.setLayoutX(175);
 		 btnAddControl.setLayoutY(240);
-		 btnAddControl.getStyleClass().setAll("btn","btn-success");
+		 btnAddControl.getStyleClass().setAll("btn","btn-default");
 		 btnAddControl.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {

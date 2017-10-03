@@ -13,7 +13,7 @@ public class Teste extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			URL url = getClass().getResource("/com/RobotPlant/Interface/Home.fxml");
+			URL url = getClass().getResource("/com/RobotPlant/Interface/Report.fxml");
 			Parent root = FXMLLoader.load(url);
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
