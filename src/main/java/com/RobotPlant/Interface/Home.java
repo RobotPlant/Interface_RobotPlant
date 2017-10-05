@@ -20,6 +20,7 @@ import com.RobotPlant.Model.TemperaturaModel;
 import com.RobotPlant.Model.UmidadeArModel;
 import com.RobotPlant.Model.UmidadeSoloModel;
 
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -50,6 +51,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Material;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import jssc.SerialPort;
@@ -124,8 +127,8 @@ public class Home extends Application {
 		 final NumberAxis yAxis = new NumberAxis();
 
 		 final LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
-		 xAxis.setLabel("Hora");
-		 yAxis.setLabel("valor");
+		 xAxis.setLabel("Tempo");
+		 yAxis.setLabel("Valor");
 
 		 final XYChart.Series<String, Number> series1 = new XYChart.Series<String, Number>();
 		 series1.setName("temperatura");
@@ -318,7 +321,7 @@ public class Home extends Application {
 
 		  tabpane.getTabs().addAll(grafico,dados);
 
-		  pane.getChildren().addAll(menuBar, tabpane, btnStatus, btnHistorico, btnReport, btnGrafico, btnPlantation, btnAddControl, btnExit, comboBoxPorts);
+		  pane.getChildren().addAll( menuBar, tabpane, btnStatus, btnHistorico, btnReport, btnGrafico, btnPlantation, btnAddControl, btnExit, comboBoxPorts);
 
 		  anchorPane.getChildren().add(pane);
 
