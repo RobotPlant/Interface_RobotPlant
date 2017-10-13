@@ -13,5 +13,7 @@ public class JRInteracaoDAO {
 	public void buscaDadosUmidadeSolo() {
 
 	}
+	
+	
 
 }

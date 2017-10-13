@@ -58,7 +58,6 @@ public class BuscaDadosDAO {
         return idTabela;
     }
 
-
     public TemperaturaModel buscaTemperatura(int i) throws SQLException {
 
         TemperaturaModel temperaturaModel = null;

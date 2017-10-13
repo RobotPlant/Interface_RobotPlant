@@ -7,7 +7,7 @@ import java.sql.Time;
 public class RelacionamentoModel implements Serializable {
 
 	/**
-	 * @author 14208 - Jo„o Luiz Gadelha Dias Junior;
+	 * @author 14208 - Jo√£o Luiz Gadelha Dias Junior;
 	 * @category JavaBean;
 	 * @since 2017
 	 */
