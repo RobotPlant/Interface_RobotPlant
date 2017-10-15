@@ -1,11 +1,17 @@
 package com.RobotPlant.JDBC;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
+
 import com.RobotPlant.Model.HistoricoModel;
+import com.RobotPlant.Model.QuerysModel;
 import com.RobotPlant.Model.TemperaturaModel;
 import com.RobotPlant.Model.UmidadeArModel;
 import com.RobotPlant.Model.UmidadeSoloModel;
@@ -91,12 +97,12 @@ public class BuscaDadosDAO {
         ResultSet rs = null;
         try {
         	//String sql = "Select umidade, hora_amostra from tb_umidade_ar";
-            String sql = "Select umidade, hora_amostra from tb_umidade_ar where id_umidade_ar = "+i+"";
+            String sql = "Select umidade_ar, hora_amostra from tb_umidade_ar where id_umidade_ar = "+i+"";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
             while(rs.next()) {
                 arModel = new UmidadeArModel();
-                arModel.setUmidadeArValor(rs.getInt("umidade"));
+                arModel.setUmidadeArValor(rs.getInt("umidade_ar"));
                 this.calendario.setTime(rs.getTimestamp("hora_amostra"));
                 arModel.setUmidadeArData(this.calendario.getTime());
             }
@@ -116,12 +122,12 @@ public class BuscaDadosDAO {
         ResultSet rs = null;
         try {
         	//String sql = "Select umidade, hora_amostra from tb_umidade_solo";
-        	String sql = "Select umidade, hora_amostra from tb_umidade_solo where id_umidade_solo ="+i+"";
+        	String sql = "Select umidade_solo, hora_amostra from tb_umidade_solo where id_umidade_solo ="+i+"";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
             while(rs.next()) {
                 soloModel = new UmidadeSoloModel();
-                soloModel.setUmidadeSoloValor(rs.getInt("umidade"));
+                soloModel.setUmidadeSoloValor(rs.getInt("umidade_solo"));
                 this.calendario.setTime(rs.getTimestamp("hora_amostra"));
                 soloModel.setUmidadeSoloData(this.calendario.getTime());
             }
@@ -137,44 +143,37 @@ public class BuscaDadosDAO {
     }
 
 
-    public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> data) throws SQLException {
+    public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> data, String tipo, Date dtInicio, Date dtFim) throws SQLException {
 
         HistoricoModel historicoModel = null;
-
-        String sql = "SELECT p.tipo_amostra, us.id_umidade_solo, us.umidade,us.hora_amostra FROM tb_planta p " +
-                "inner join tb_planta_umidadesolo pus on p.id_planta = pus.Planta_id_Planta " +
-                "inner join tb_umidade_solo us on pus.umidade_solo_id_umidade_solo = us.id_umidade_solo;";
-
         PreparedStatement stmt = null;
         ResultSet rs = null;
-
+        QuerysModel qmodel = new QuerysModel();
+        StringBuilder sql = new StringBuilder();
+        List<String> values = new ArrayList<String>();
+        values = qmodel.selectQuery(tipo);
+        sql.append(values.get(0));
         try {
-            stmt = conn.prepareStatement(sql);
-
+            stmt = conn.prepareStatement(sql.toString());
+            stmt.setDate(1, dtInicio);
+            stmt.setDate(2, dtFim);
             rs = stmt.executeQuery();
-
             while(rs.next()) {
                 historicoModel = new HistoricoModel();
-
-                historicoModel.setId(rs.getInt("us.id_umidade_solo"));
-                historicoModel.setTipo("Umidade Solo");
-                historicoModel.setValor(rs.getDouble("us.umidade"));
-                historicoModel.setPlanta(rs.getString("p.tipo_amostra"));
-                historicoModel.setDataAmostra(rs.getDate("us.hora_amostra"));
-
+                historicoModel.setId(rs.getInt(values.get(2)));
+                historicoModel.setTipo(tipo);
+                historicoModel.setValor(rs.getDouble(values.get(3)));
+                historicoModel.setPlanta(rs.getString(values.get(1)));
+                historicoModel.setDataAmostra(rs.getDate(values.get(4)));
                 data.add(historicoModel);
-
             }
-
             stmt.close();
             rs.close();
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             conn.close();
         }
-
         return data;
     }
 }
