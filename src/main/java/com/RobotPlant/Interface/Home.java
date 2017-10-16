@@ -5,8 +5,10 @@ import static jssc.SerialPort.MASK_RXCHAR;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -113,7 +115,7 @@ public class Home extends Application {
 		 dados.closableProperty().set(false);
 
 		 Tab grafico = new Tab();
-		 grafico.setText("Gráfico");
+		 grafico.setText("GrÃ¡fico");
 		 grafico.closableProperty().set(false);
 
 		 ListView<String> lvDados = new ListView<String>();
@@ -156,8 +158,9 @@ public class Home extends Application {
 //		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
+		 menuBar.setPrefSize(800, 25);
 		 menuBar.setLayoutX(0);
-		 menuBar.setLayoutY(2);
+		 menuBar.setLayoutY(0);
 
 		 Menu file = new Menu();
 		 file.setText("Arquivo");
@@ -207,7 +210,7 @@ public class Home extends Application {
 		 });
 
 		 Button btnHistorico = new Button();
-		 btnHistorico.setText("Histórico");
+		 btnHistorico.setText("HistÃ³rico");
 		 btnHistorico.setLayoutX(175);
 		 btnHistorico.setLayoutY(62);
 		 btnHistorico.getStyleClass().setAll("btn","btn-success");
@@ -226,7 +229,7 @@ public class Home extends Application {
 		 });
 
 		 Button btnReport = new Button();
-		 btnReport.setText("Relatórios");
+		 btnReport.setText("RelatÃ³rios");
 		 btnReport.setLayoutX(14);
 		 btnReport.setLayoutY(151);
 		 btnReport.getStyleClass().setAll("btn","btn-success");
@@ -245,7 +248,7 @@ public class Home extends Application {
 		 });
 
 		 Button btnGrafico = new Button();
-		 btnGrafico.setText("Gráficos");
+		 btnGrafico.setText("GrÃ¡ficos");
 		 btnGrafico.setLayoutX(175);
 		 btnGrafico.setLayoutY(151);
 		 btnGrafico.getStyleClass().setAll("btn","btn-success");
@@ -327,8 +330,9 @@ public class Home extends Application {
 
 		  Scene cena = new Scene(anchorPane, 800, 600);
 
-		  cena.getStylesheets().addAll(/*"com/robotplant/interface/application.css",*/"bootstrapfx.css");
-
+		  //cena.getStylesheets().addAll(/*"com/robotplant/interface/application.css",*/"bootstrapfx.css");
+		  cena.getStylesheets().addAll("bootstrapfx.css");
+		  
 		  palco.getIcons().add(new Image(getClass().getResourceAsStream("/img/plant-icon-34784.png")));
 		  palco.setTitle("RobotPlant - 0.1 ");
 		  palco.setResizable(false);
@@ -371,11 +375,22 @@ public class Home extends Application {
 	        animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
 	        animation.play();
 	 }
+	 
 	 private void prepareData() {
 	        for (int i = 0; i < 8; i++) {
 	            group[i] = 0;
 	        }
-	    }
+	 }
+	private void chartPopulation(XYChart.Series<String, Number> series1) {
+		
+		List<TemperaturaModel> listTemperatura = new ArrayList<TemperaturaModel>();
+		List<UmidadeArModel> listUmidadeAr = new ArrayList<UmidadeArModel>();
+		List<UmidadeSoloModel> listUmidadeSolo = new ArrayList<UmidadeSoloModel>();
+		DateFormat format = new SimpleDateFormat("HH:mm:ss");
+		
+		series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
+		
+	}
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void Animation(LineChart lineChart, final XYChart.Series series1, final int group[]) {
 

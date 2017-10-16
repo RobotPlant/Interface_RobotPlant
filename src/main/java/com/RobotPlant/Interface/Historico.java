@@ -61,7 +61,7 @@ public class Historico extends Application {
 		pane2.prefWidth(774);
 		pane2.prefHeight(427);
 		pane2.setLayoutX(14);
-		pane2.setLayoutY(144);
+		pane2.setLayoutY(160);
 
 		HBox hBox = new HBox();
 		hBox.prefWidth(800);
@@ -86,7 +86,7 @@ public class Historico extends Application {
 		
 		VBox vbButtons = new VBox();
 		vbButtons.setLayoutX(650);
-		vbButtons.setLayoutY(15);
+		vbButtons.setLayoutY(35);
 		vbButtons.setSpacing(10);
 
 		Separator separator = new Separator();
@@ -113,7 +113,7 @@ public class Historico extends Application {
 		TableColumn<HistoricoModel, String> column4 = new TableColumn<HistoricoModel, String>("Planta");
 		column4.setPrefWidth(155);
 		column4.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("planta"));
-		TableColumn<HistoricoModel, Date> column5 = new TableColumn<HistoricoModel, Date>("Data");
+		TableColumn<HistoricoModel, Date> column5 = new TableColumn<HistoricoModel, Date>("Data/Hora Amostra");
 		column5.setPrefWidth(155);
 		column5.setCellValueFactory(new PropertyValueFactory<HistoricoModel, Date>("dataAmostra"));		
 
@@ -122,8 +122,9 @@ public class Historico extends Application {
 		MenuBar menuBar = new MenuBar();
 		menuBar.prefWidth(800);
 		menuBar.prefHeight(25);
+		menuBar.setPrefSize(800, 25);
 		menuBar.setLayoutX(0);
-		menuBar.setLayoutY(2);
+		menuBar.setLayoutY(0);
 
 		Menu file = new Menu();
 		file.setText("Arquivo");

@@ -1,12 +1,19 @@
 package com.RobotPlant.Interface;
 
+import java.sql.Date;
+import java.sql.SQLException;
+
+import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
+
+import com.RobotPlant.JDBC.BuscaDadosDAO;
+import com.RobotPlant.Model.HistoricoModel;
 import com.RobotPlant.Model.TemperaturaModel;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.InsetsBuilder;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -22,8 +29,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,7 +38,10 @@ public class Report extends Application {
 	public static void main(String[] args) {
 		  launch();
 		 }
+	
+	String[] tipo = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -41,91 +49,77 @@ public class Report extends Application {
 		anchorPane.prefHeight(600);
 		anchorPane.prefWidth(800);
 
-		AnchorPane anchorDados = new AnchorPane();
-//		anchorDados.prefHeight(787);
-	//	anchorDados.prefWidth(200);
-
-		AnchorPane scrollDados = new AnchorPane();
-//		scrollDados.prefHeight(787);
-	//	scrollDados.prefWidth(200);
-
-		AnchorPane anchorRelatorio = new AnchorPane();
-//		anchorRelatorio.prefHeight(200);
-	//	anchorRelatorio.prefWidth(180);
-
 		Pane pane = new Pane();
 //		pane.prefWidth(800);
 	//	pane.prefHeight(600);
 		//pane.setLayoutX(0);
-	//	pane.setLayoutY(0);
-
-		BorderPane borderPane = new BorderPane();
-	//	borderPane.prefWidth(800);
-	//	borderPane.prefHeight(10);
-		borderPane.setLayoutX(1);
-		borderPane.setLayoutY(168);
+	//	pane.setLayoutY(0);		
 
 		TabPane tabPane = new TabPane();
-	//	tabPane.prefWidth(800);
-	//	tabPane.prefHeight(200);
-		tabPane.setLayoutX(1);
+		tabPane.prefWidth(760);
+		tabPane.prefHeight(400);
+		tabPane.setLayoutX(20);
 		tabPane.setLayoutY(150);
+		tabPane.setPrefSize(760, 400);
 
 		Tab tab = new Tab();
 		tab.setText("Dados");
 		tab.closableProperty().set(false);
 
 		ScrollPane scrollPane = new ScrollPane();	//<--- Falta fazer tabs para cada tipo de arquivo.
-		scrollPane.prefWidth(800);
-		scrollPane.prefHeight(100);
-		scrollPane.setLayoutX(0);
-		scrollPane.setLayoutY(0);
+		scrollPane.prefWidth(760);
+		scrollPane.prefHeight(1000);
+		scrollPane.setPrefSize(760, 1000);
+//		scrollPane.setLayoutX(0);
+//		scrollPane.setLayoutY(0);
 
 		VBox cbVbox = new VBox();
-		cbVbox.prefWidth(100);
-		cbVbox.prefHeight(105);
-		cbVbox.setLayoutX(65);
-		cbVbox.setLayoutY(44);
-		cbVbox.setPadding(new Insets(10, 10, 10, 10));
+//		cbVbox.prefWidth(100);
+//		cbVbox.prefHeight(105);
+		cbVbox.setLayoutX(50);
+		cbVbox.setLayoutY(50);
+//		cbVbox.setPadding(new Insets(10, 10, 10, 10));
 		cbVbox.setSpacing(10);
 
 		VBox lblVbox = new VBox();
-		lblVbox.prefWidth(52);
-		lblVbox.prefHeight(75);
-		lblVbox.setLayoutX(214);
-		lblVbox.setLayoutY(44);
-		lblVbox.setPadding(new Insets(10, 5, 5, 5));
+//		lblVbox.prefWidth(52);
+//		lblVbox.prefHeight(75);
+		lblVbox.setLayoutX(225);
+		lblVbox.setLayoutY(50);
+//		lblVbox.setPadding(new Insets(10, 5, 5, 5));
 		lblVbox.setSpacing(20);
 
 		VBox dpVbox = new VBox();
-		dpVbox.prefWidth(193);
-		dpVbox.prefHeight(89);
-		dpVbox.setLayoutX(310);
-		dpVbox.setLayoutY(39);
-		dpVbox.setPadding(new Insets(10, 10, 10, 10));
-		dpVbox.setSpacing(15);
+//		dpVbox.prefWidth(193);
+//		dpVbox.prefHeight(89);
+		dpVbox.setLayoutX(350);
+		dpVbox.setLayoutY(50);
+//		dpVbox.setPadding(new Insets(10, 10, 10, 10));
+		dpVbox.setSpacing(10);
 
-		HBox hBoxBtn = new HBox();
-		hBoxBtn.prefWidth(200);
-		hBoxBtn.prefHeight(25);
-		hBoxBtn.setLayoutX(550);
-		hBoxBtn.setLayoutY(40);
-		hBoxBtn.setPadding(new Insets(10, 10, 10, 10));
-		hBoxBtn.setSpacing(20);
+		VBox vBoxBtn = new VBox();
+//		vBoxBtn.prefWidth(200);
+//		vBoxBtn.prefHeight(25);
+		vBoxBtn.setLayoutX(650);
+		vBoxBtn.setLayoutY(30);
+//		vBoxBtn.setPadding(new Insets(10, 10, 10, 10));
+		vBoxBtn.setSpacing(10);
 
 		VBox vBoxStts = new VBox();
-		vBoxStts.prefWidth(400);
-		vBoxStts.prefHeight(100);
-		vBoxStts.setLayoutX(550);
-		vBoxStts.setLayoutY(90);
-		vBoxStts.setPadding(new Insets(5, 5, 5, 0));
-		vBoxStts.setSpacing(10);
+		vBoxStts.prefWidth(220);
+		vBoxStts.prefHeight(40);
+		vBoxStts.setPrefSize(220, 30);
+		vBoxStts.setLayoutX(350);
+		vBoxStts.setLayoutY(118);
+//		vBoxStts.setPadding(new Insets(5, 5, 5, 0));
+//		vBoxStts.setSpacing(10);
 
 		MenuBar menuBar = new MenuBar();
 		menuBar.prefWidth(800);
 		menuBar.prefHeight(25);
-		menuBar.setLayoutX(1);
-		menuBar.setLayoutY(2);
+		menuBar.setPrefSize(800, 25);
+		menuBar.setLayoutX(0);
+		menuBar.setLayoutY(0);
 
 		Menu file = new Menu();
 		file.setText("Arquivo");
@@ -137,38 +131,63 @@ public class Report extends Application {
 
 		ProgressBar pbStatus = new ProgressBar();
 		pbStatus.prefWidth(200);
-		pbStatus.prefHeight(25);
+		pbStatus.prefHeight(30);
+		pbStatus.setPrefSize(200, 30);
 
-		TableView<TemperaturaModel> tvTemperatura = new TableView<TemperaturaModel>();
-		tvTemperatura.prefWidth(774);
-		tvTemperatura.prefHeight(400);
-		tvTemperatura.setLayoutX(0);
-		tvTemperatura.setLayoutY(0);
+		TableView<TemperaturaModel> tvDados = new TableView<TemperaturaModel>();
+		tvDados.prefWidth(600);
+		tvDados.prefHeight(100);
+		tvDados.setPrefSize(760, 100);
+		tvDados.setLayoutX(0);
+		tvDados.setLayoutY(0);
+		
+		//Criar método de fábrica de celulas.
 
 		TableColumn<TemperaturaModel, ?> tab1 = new TableColumn<>("Tab1");
-		tab1.setPrefWidth(200);
+		tab1.setPrefWidth(100);
 		TableColumn<TemperaturaModel, ?> tab2 = new TableColumn<>("Tab1");
-		tab2.setPrefWidth(200);
+		tab2.setPrefWidth(100);
 		TableColumn<TemperaturaModel, ?> tab3 = new TableColumn<>("Tab1");
-		tab3.setPrefWidth(200);
+		tab3.setPrefWidth(100);
 		TableColumn<TemperaturaModel, ?> tab4 = new TableColumn<>("Tab1");
-		tab4.setPrefWidth(200);
-		tvTemperatura.getColumns().addAll(tab1, tab2, tab3, tab4);
+		tab4.setPrefWidth(100);
+		tvDados.getColumns().addAll(tab1, tab2, tab3, tab4);
 
 		CheckBox cbTemperatura = new CheckBox();
 		cbTemperatura.setText("Temperatura");
+		cbTemperatura.setOnAction(new EventHandler<ActionEvent>() {
 
+			@Override
+			public void handle(ActionEvent event) {
+				tipo[0] = cbTemperatura.getText(); 
+			}
+		});
+		
 		CheckBox cbUmidadeAr = new CheckBox();
-		cbUmidadeAr.setText("Umidade do ar");
+		cbUmidadeAr.setText("Umidade ar");
+		cbUmidadeAr.setOnAction(new EventHandler<ActionEvent>() {
 
+			@Override
+			public void handle(ActionEvent event) {
+				tipo[1] = cbUmidadeAr.getText();				
+			}
+		});
+		
 		CheckBox cbUmidadeSolo = new CheckBox();
-		cbUmidadeSolo.setText("Umidade do solo");
+		cbUmidadeSolo.setText("Umidade solo");
+		cbUmidadeSolo.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				tipo[2] = cbUmidadeSolo.getText();				
+			}
+		});
 
 		Label lblDtInicio = new Label();
-		lblDtInicio.setText("Inicio do periodo");
+		lblDtInicio.setText("Periodo inicial");
 
 		Label lblDtFim = new Label();
-		lblDtFim.setText("Final do periodo");
+		lblDtFim.setText("Periodo final");
 
 		DatePicker dpDtInicio = new DatePicker();
 
@@ -176,12 +195,35 @@ public class Report extends Application {
 
 		Button btnBuscar = new Button();
 		btnBuscar.setText("Buscar");
+		btnBuscar.getStyleClass().setAll("btn","btn-success");
+		btnBuscar.setOnAction(new EventHandler<ActionEvent>() {
 
+			 public void handle(ActionEvent event) {
+				 BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
+				 ObservableList<HistoricoModel> dados = FXCollections.observableArrayList();
+				 for(int i =0; i < tipo.length; i++) {
+					 try {
+						buscaDadosDAO.listaDados(dados, tipo[i], Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue()));
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				 }
+			 }
+		 });
+		
 		Button btnGerar = new Button();
 		btnGerar.setText("Gerar");
+		btnGerar.getStyleClass().setAll("btn","btn-primary");
+		btnGerar.setOnAction(new EventHandler<ActionEvent>() {
 
+			 public void handle(ActionEvent event) {
+
+			 }
+		 });
+		
 		Button btnVoltar = new Button();
 		btnVoltar.setText("Voltar");
+		btnVoltar.getStyleClass().setAll("btn","btn-danger");
 		btnVoltar.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
@@ -202,23 +244,17 @@ public class Report extends Application {
 
 		dpVbox.getChildren().addAll(dpDtInicio, dpDtFim);
 
-		hBoxBtn.getChildren().addAll(btnBuscar, btnGerar, btnVoltar);
+		vBoxBtn.getChildren().addAll(btnBuscar, btnGerar, btnVoltar);
 
 		vBoxStts.getChildren().addAll(pbStatus);
-
-		scrollDados.getChildren().add(tvTemperatura);
-
-		scrollPane.setContent(scrollDados);
-
-		anchorDados.getChildren().add(scrollPane);
-
-		tab.setContent(anchorDados);
+		
+		scrollPane.setContent(tvDados);
+		
+		tab.setContent(scrollPane);
 
 		tabPane.getTabs().add(tab);
 
-		borderPane.setCenter(tabPane);
-
-		pane.getChildren().addAll(vBoxStts, hBoxBtn, borderPane, menuBar, lblVbox, dpVbox, cbVbox);
+		pane.getChildren().addAll(vBoxStts, vBoxBtn, tabPane, menuBar, lblVbox, dpVbox, cbVbox);
 
 		anchorPane.getChildren().add(pane);
 
