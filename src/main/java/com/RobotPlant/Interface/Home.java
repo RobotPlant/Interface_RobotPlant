@@ -86,10 +86,10 @@ public class Home extends Application {
      	 Calendar.getInstance(TimeZone.getDefault());
 
 		 AnchorPane anchorPane = new AnchorPane();
-		 anchorPane.prefWidth(800);
-		 anchorPane.prefHeight(600);
-		 anchorPane.setLayoutX(0);
-		 anchorPane.setLayoutY(0);
+//		 anchorPane.prefWidth(800);
+//		 anchorPane.prefHeight(600);
+//		 anchorPane.setLayoutX(0);
+//		 anchorPane.setLayoutY(0);
 
 		 Pane pane = new Pane();
 		 pane.prefWidth(800);
@@ -174,8 +174,8 @@ public class Home extends Application {
 		 //arduinoSC.DetectaPorta();
 		 final ComboBox comboBoxPorts = new ComboBox(arduinoSC.DetectaPorta());
 		 comboBoxPorts.setPromptText("Porta");
-		 comboBoxPorts.setLayoutX(175);
-		 comboBoxPorts.setLayoutY(329);
+		 comboBoxPorts.setLayoutX(350);
+		 comboBoxPorts.setLayoutY(470);
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
 
 			 public void changed(ObservableValue<? extends String> observable, String oldValue,

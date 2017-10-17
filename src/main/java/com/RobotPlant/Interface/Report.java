@@ -2,6 +2,8 @@ package com.RobotPlant.Interface;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 
@@ -27,6 +29,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -39,7 +42,7 @@ public class Report extends Application {
 		  launch();
 		 }
 	
-	String[] tipo = null;
+	List<CheckBox> tipo = new ArrayList<CheckBox>();
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -133,8 +136,10 @@ public class Report extends Application {
 		pbStatus.prefWidth(200);
 		pbStatus.prefHeight(30);
 		pbStatus.setPrefSize(200, 30);
+		
+		ObservableList<HistoricoModel> dados = FXCollections.observableArrayList();
 
-		TableView<TemperaturaModel> tvDados = new TableView<TemperaturaModel>();
+		TableView<String> tvDados = new TableView<String>();
 		tvDados.prefWidth(600);
 		tvDados.prefHeight(100);
 		tvDados.setPrefSize(760, 100);
@@ -143,7 +148,7 @@ public class Report extends Application {
 		
 		//Criar método de fábrica de celulas.
 
-		TableColumn<TemperaturaModel, ?> tab1 = new TableColumn<>("Tab1");
+/*		TableColumn<TemperaturaModel, ?> tab1 = new TableColumn<>("Tab1");
 		tab1.setPrefWidth(100);
 		TableColumn<TemperaturaModel, ?> tab2 = new TableColumn<>("Tab1");
 		tab2.setPrefWidth(100);
@@ -152,34 +157,46 @@ public class Report extends Application {
 		TableColumn<TemperaturaModel, ?> tab4 = new TableColumn<>("Tab1");
 		tab4.setPrefWidth(100);
 		tvDados.getColumns().addAll(tab1, tab2, tab3, tab4);
-
+*/
 		CheckBox cbTemperatura = new CheckBox();
 		cbTemperatura.setText("Temperatura");
 		cbTemperatura.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				tipo[0] = cbTemperatura.getText(); 
+				if(cbTemperatura.isSelected()) {
+					tipo.add(cbTemperatura); 					
+				} else {
+					tipo.remove(cbTemperatura);
+				}
 			}
 		});
 		
 		CheckBox cbUmidadeAr = new CheckBox();
-		cbUmidadeAr.setText("Umidade ar");
+		cbUmidadeAr.setText("Umidade Ar");
 		cbUmidadeAr.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				tipo[1] = cbUmidadeAr.getText();				
+				if(cbUmidadeAr.isSelected()) {
+					tipo.add(cbUmidadeAr);									
+				} else {
+					tipo.remove(cbUmidadeAr);
+				}
 			}
 		});
 		
 		CheckBox cbUmidadeSolo = new CheckBox();
-		cbUmidadeSolo.setText("Umidade solo");
+		cbUmidadeSolo.setText("Umidade Solo");
 		cbUmidadeSolo.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				tipo[2] = cbUmidadeSolo.getText();				
+				if(cbUmidadeSolo.isSelected()) {
+					tipo.add(cbUmidadeSolo);									
+				} else {
+					tipo.remove(cbUmidadeSolo);
+				}
 			}
 		});
 
@@ -200,10 +217,12 @@ public class Report extends Application {
 
 			 public void handle(ActionEvent event) {
 				 BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
-				 ObservableList<HistoricoModel> dados = FXCollections.observableArrayList();
-				 for(int i =0; i < tipo.length; i++) {
+				 
+				 for(int i =0; i < tipo.size(); i++) {
 					 try {
-						buscaDadosDAO.listaDados(dados, tipo[i], Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue()));
+						buscaDadosDAO.listaDados(dados, tipo.get(i).getText(), Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue()));
+						tabPane.getTabs().add(tabFactory(dados, tipo.get(i).getText()));
+						
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
@@ -248,11 +267,11 @@ public class Report extends Application {
 
 		vBoxStts.getChildren().addAll(pbStatus);
 		
-		scrollPane.setContent(tvDados);
+	//	scrollPane.setContent(tvDados);
 		
-		tab.setContent(scrollPane);
+	//	tab.setContent(scrollPane);
 
-		tabPane.getTabs().add(tab);
+	//	tabPane.getTabs().add(tab);
 
 		pane.getChildren().addAll(vBoxStts, vBoxBtn, tabPane, menuBar, lblVbox, dpVbox, cbVbox);
 
@@ -270,4 +289,54 @@ public class Report extends Application {
 		primaryStage.show();
 
 	}
+	
+	private static Tab tabFactory(ObservableList<HistoricoModel> dados, String tipo) {
+		
+		ScrollPane scrollPane = new ScrollPane();
+		TableView<HistoricoModel> tvDado = new TableView<HistoricoModel>();
+		
+		columnFatory(dados ,tvDado);
+		
+		Tab tab = new Tab();
+		tab.setText(tipo);
+		tab.closableProperty().set(false);
+		
+		scrollPane.setContent(tvDado);
+		tab.setContent(scrollPane);
+		
+		return tab;
+		
+	}
+	
+	private static TableView<HistoricoModel> columnFatory(ObservableList<HistoricoModel> dados, TableView<HistoricoModel> tvDado) {
+		
+		double size = 150;
+		TableColumn<HistoricoModel, Integer> tabcolId = new TableColumn<HistoricoModel, Integer>("ID");
+		tabcolId.setPrefWidth(size);				
+		tabcolId.setCellValueFactory(new PropertyValueFactory<HistoricoModel, Integer>("id"));
+		
+		TableColumn<HistoricoModel, String> tabcolPlanta = new TableColumn<HistoricoModel, String>("Amostra");
+		tabcolPlanta.setPrefWidth(size);				
+		tabcolPlanta.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("planta"));
+		
+		TableColumn<HistoricoModel, String> tabcolTipo = new TableColumn<HistoricoModel, String>("Tipo de Dado");
+		tabcolTipo.setPrefWidth(size);				
+		tabcolTipo.setCellValueFactory(new PropertyValueFactory<HistoricoModel, String>("tipo"));
+		
+		TableColumn<HistoricoModel, Double> tabcolValor = new TableColumn<HistoricoModel, Double>("Valor");
+		tabcolValor.setPrefWidth(size);				
+		tabcolValor.setCellValueFactory(new PropertyValueFactory<HistoricoModel, Double>("valor"));
+		
+		TableColumn<HistoricoModel, Date> tabcolData = new TableColumn<HistoricoModel, Date>("Data/Hora");
+		tabcolData.setPrefWidth(size);				
+		tabcolData.setCellValueFactory(new PropertyValueFactory<HistoricoModel, Date>("dataAmostra"));
+		
+		tvDado.getColumns().addAll(tabcolId, tabcolPlanta, tabcolTipo, tabcolValor, tabcolData);
+		tvDado.setItems(dados);
+			
+		
+		return tvDado;
+	}
+	
+	
 }
