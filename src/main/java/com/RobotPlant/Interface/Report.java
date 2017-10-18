@@ -139,7 +139,7 @@ public class Report extends Application {
 		
 		ObservableList<HistoricoModel> dados = FXCollections.observableArrayList();
 
-		TableView<String> tvDados = new TableView<String>();
+		TableView<HistoricoModel> tvDados = new TableView<HistoricoModel>();
 		tvDados.prefWidth(600);
 		tvDados.prefHeight(100);
 		tvDados.setPrefSize(760, 100);
@@ -217,16 +217,19 @@ public class Report extends Application {
 
 			 public void handle(ActionEvent event) {
 				 BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
-				 
-				 for(int i =0; i < tipo.size(); i++) {
-					 try {
-						buscaDadosDAO.listaDados(dados, tipo.get(i).getText(), Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue()));
-						tabPane.getTabs().add(tabFactory(dados, tipo.get(i).getText()));
-						
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-				 }
+				 if(!dados.isEmpty()) {
+					 dados.clear();					 
+				 } else {
+					 
+					 for(int i =0; i < tipo.size(); i++) {
+						 try {
+							 buscaDadosDAO.listaDados(dados, tipo.get(i).getText(), Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue()));
+							 tabPane.getTabs().add(tabFactory(dados, tipo.get(i).getText()));
+						 } catch (SQLException e) {
+							 throw new RuntimeException(e);
+						 }
+					 }
+				 }				 
 			 }
 		 });
 		
