@@ -2,6 +2,7 @@ package com.RobotPlant.Interface;
 
 import static jssc.SerialPort.MASK_RXCHAR;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,10 +19,12 @@ import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 import com.RobotPlant.ArduinoUtil.ArduinoSC;
 import com.RobotPlant.JDBC.BuscaDadosDAO;
+import com.RobotPlant.Model.HistoricoModel;
+import com.RobotPlant.Model.RelacionamentoModel;
 import com.RobotPlant.Model.TemperaturaModel;
 import com.RobotPlant.Model.UmidadeArModel;
 import com.RobotPlant.Model.UmidadeSoloModel;
-
+import com.google.zxing.client.result.VCardResultParser;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -43,6 +46,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -53,6 +57,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
 import javafx.stage.Stage;
@@ -86,10 +91,6 @@ public class Home extends Application {
      	 Calendar.getInstance(TimeZone.getDefault());
 
 		 AnchorPane anchorPane = new AnchorPane();
-//		 anchorPane.prefWidth(800);
-//		 anchorPane.prefHeight(600);
-//		 anchorPane.setLayoutX(0);
-//		 anchorPane.setLayoutY(0);
 
 		 Pane pane = new Pane();
 		 pane.prefWidth(800);
@@ -98,18 +99,21 @@ public class Home extends Application {
 		 pane.setLayoutY(0);
 
 		 TabPane tabpane = new TabPane();
-		 //tabpane.setSide();
 		 tabpane.tabClosingPolicyProperty();
 		 tabpane.prefWidth(415);
 		 tabpane.prefHeight(325);
 		 tabpane.tabMinWidthProperty().add(0);
 		 tabpane.tabMinHeightProperty().add(0);
 		 tabpane.tabMaxWidthProperty().add(1.7976931348623157E308);
-//		 tabpane.setTabMaxHeight(1.7976931348623157E308);
-	//	 tabpane.setTabMaxWidth(1.7976931348623157E308);
 		 tabpane.setLayoutX(300);
 		 tabpane.setLayoutY(30);
-
+		 
+		 VBox vbCheckBox = new VBox();
+		 //vbCheckBox.setPrefSize(prefWidth, prefHeight);
+		 vbCheckBox.setLayoutX(500);
+		 vbCheckBox.setLayoutY(470);
+		 vbCheckBox.setSpacing(10);
+		 
 		 Tab dados = new Tab();
 		 dados.setText("Dados");
 		 dados.closableProperty().set(false);
@@ -132,16 +136,16 @@ public class Home extends Application {
 		 xAxis.setLabel("Tempo");
 		 yAxis.setLabel("Valor");
 
-		 final XYChart.Series<String, Number> series1 = new XYChart.Series<String, Number>();
-		 series1.setName("temperatura");
+		 final XYChart.Series<String, Number> seriesTemperatura = new XYChart.Series<String, Number>();
+//		 seriesTemperatura.setName("Temperatura");
 
-		 final XYChart.Series<String, Number> series2 = new XYChart.Series<String, Number>();
-		 series2.setName("umidade ar");
+		 final XYChart.Series<String, Number> seriesUmidadeAr = new XYChart.Series<String, Number>();
+//		 series2.setName("Umidade Ar");
 
-		 final XYChart.Series<String, Number> series3 = new XYChart.Series<String, Number>();
-		 series3.setName("umidade solo");
+		 final XYChart.Series<String, Number> seriesUmidadeSolo = new XYChart.Series<String, Number>();
+//		 series3.setName("Umidade Solo");
 
-		 lineChart.getData().addAll(series1, series2, series3);
+		 lineChart.getData().addAll(seriesTemperatura, seriesUmidadeAr, seriesUmidadeSolo);
 
 
 		 ChartGrid chartGrid = new ChartGrid();
@@ -155,7 +159,6 @@ public class Home extends Application {
 		// chartGrid.setChartGridPos(pos , lineChart);
 
 		 MenuBar menuBar = new MenuBar();
-//		 menuBar.getStylesheets().add("context-menu");
 		 menuBar.prefWidth(800);
 		 menuBar.prefHeight(25);
 		 menuBar.setPrefSize(800, 25);
@@ -171,23 +174,111 @@ public class Home extends Application {
 		 menuBar.getMenus().addAll(file,edit,help);
 
 		 final ArduinoSC arduinoSC = new ArduinoSC();
-		 //arduinoSC.DetectaPorta();
+		 arduinoSC.DetectaPorta();
 		 final ComboBox comboBoxPorts = new ComboBox(arduinoSC.DetectaPorta());
 		 comboBoxPorts.setPromptText("Porta");
 		 comboBoxPorts.setLayoutX(350);
 		 comboBoxPorts.setLayoutY(470);
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
-
-			 public void changed(ObservableValue<? extends String> observable, String oldValue,
-					 String newValue) {
+			 //Deve-se alterar para receber uma lista dos dados da porta serial
+			 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				 System.out.println(newValue);
 				 arduinoSC.DisconectaArduino();
-				// arduinoSC.SerialConnection(newValue, series1);
+				 arduinoSC.SerialConnection(newValue, series1);
 
 				 Animation(lineChart, series1, arduinoSC.SerialConnection(newValue, series1));
 
 			 }
 		 });
+		 
+		 CheckBox cbTemperatura = new CheckBox("Temperatura");
+		 cbTemperatura.setSelected(true);
+		 cbTemperatura.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				if(!cbTemperatura.isSelected()) {
+					System.out.println("Não Estou selecionado");
+				}
+				
+			}
+		});
+		 CheckBox cbUmidadeAr = new CheckBox("Umidade Ar");
+		 cbUmidadeAr.setSelected(true);
+		 cbUmidadeAr.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					if(!cbUmidadeAr.isSelected()) {
+						System.out.println("Não Estou selecionado");
+					}
+					
+				}
+			});
+		 CheckBox cbUmidadeSolo = new CheckBox("Umidade Solo");
+		 cbUmidadeSolo.setSelected(true);
+		 cbUmidadeSolo.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					if(!cbUmidadeSolo.isSelected()) {
+						System.out.println("Não Estou selecionado");
+					}
+					
+				}
+			});
+		 
+		 
+		 
+		 Timeline animation = new Timeline();
+		 animation.getKeyFrames()
+		 .add(new KeyFrame(Duration.millis(100000), new EventHandler<ActionEvent>() {
+			 
+			 public void handle(ActionEvent actionEvent) {
+				 i++;
+				 DateFormat format = new SimpleDateFormat("HH:mm:ss");
+				 try {
+					 if(cbTemperatura.isSelected()) {
+						 seriesFactory(seriesTemperatura, cbTemperatura.getText());
+					 } if(cbUmidadeAr.isSelected()) {
+						 seriesFactory(seriesUmidadeAr, cbUmidadeAr.getText());
+					 } if(cbUmidadeSolo.isSelected()) {
+						 seriesFactory(seriesUmidadeSolo, cbUmidadeSolo.getText());
+					 }
+					 
+					 
+					 
+					 
+					 
+					/* if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
+						 temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
+						 series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
+					 } if (new BuscaDadosDAO().verificaId(i,"umidade_ar")) {
+						 arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
+						 series2.getData().add(new XYChart.Data<String, Number>(format.format(arModel.getUmidadeArData()), arModel.getUmidadeArValor()));
+					 } if(new BuscaDadosDAO().verificaId(i,"umidade_solo")) {
+						 soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
+						 series3.getData().add(new XYChart.Data<String, Number>(format.format(soloModel.getUmidadeSoloData()).toString(), soloModel.getUmidadeSoloValor()));
+					 } else {
+						 i=1;
+					 }*/
+				 } catch (SQLException e) {
+					 e.printStackTrace();
+				 }/*
+				 if (series1.getData().size() > 30) {
+					 series1.getData().remove(0);
+				 }
+				 if (series2.getData().size() > 30) {
+					 series2.getData().remove(0);
+				 }
+				 if (series3.getData().size() > 30) {
+					 series3.getData().remove(0);
+				 }*/
+			 }
+		 }));
+		 
+		 animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
+		 animation.play();
 
 		 Button btnStatus = new Button();
 		 btnStatus.setDisable(true);
@@ -256,10 +347,10 @@ public class Home extends Application {
 
 			 public void handle(ActionEvent event) {
 
-				 ChartGrid chartGrid = new ChartGrid();
+				 Grafico grafico = new Grafico();
 
 				 try {
-					 chartGrid.start(palco);
+					 grafico.start(palco);
 				 } catch (Exception e) {
 					 e.printStackTrace();
 				 }
@@ -318,13 +409,16 @@ public class Home extends Application {
 	          }
 	      });
 
+		 
 		  grafico.setContent(lineChart);
 
 		  dados.setContent(lvDados);
 
 		  tabpane.getTabs().addAll(grafico,dados);
-
-		  pane.getChildren().addAll( menuBar, tabpane, btnStatus, btnHistorico, btnReport, btnGrafico, btnPlantation, btnAddControl, btnExit, comboBoxPorts);
+		  
+		  vbCheckBox.getChildren().addAll(cbTemperatura, cbUmidadeAr, cbUmidadeSolo);
+		  
+		  pane.getChildren().addAll( menuBar, tabpane, btnStatus, btnHistorico, btnReport, btnGrafico, btnPlantation, btnAddControl, btnExit, comboBoxPorts, vbCheckBox);
 
 		  anchorPane.getChildren().add(pane);
 
@@ -339,41 +433,6 @@ public class Home extends Application {
 		  palco.setScene(cena);
 		  palco.show();
 
-		  Timeline animation = new Timeline();
-	        animation.getKeyFrames()
-	                .add(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
-	                    public void handle(ActionEvent actionEvent) {
-	                    	i++;
-	                    	DateFormat format = new SimpleDateFormat("HH:mm:ss");
-	                    	try {
-								if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
-									temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
-									series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
-								} if (new BuscaDadosDAO().verificaId(i,"umidade_ar")) {
-									arModel = new BuscaDadosDAO().buscaUmidadeAr(i);
-									series2.getData().add(new XYChart.Data<String, Number>(format.format(arModel.getUmidadeArData()), arModel.getUmidadeArValor()));
-	                    		} if(new BuscaDadosDAO().verificaId(i,"umidade_solo")) {
-	                    			soloModel = new BuscaDadosDAO().buscaUmidadeSolo(i);
-									series3.getData().add(new XYChart.Data<String, Number>(format.format(soloModel.getUmidadeSoloData()).toString(), soloModel.getUmidadeSoloValor()));
-	                    		} else {
-	                    			i=1;
-	                    		}
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-	                        if (series1.getData().size() > 30) {
-	                            series1.getData().remove(0);
-	                        }
-	                        if (series2.getData().size() > 30) {
-	                            series2.getData().remove(0);
-	                        }
-	                        if (series3.getData().size() > 30) {
-	                        	series3.getData().remove(0);
-	                        }
-	                    }
-	                }));
-	        animation.setCycleCount(javafx.animation.Animation.INDEFINITE);
-	        animation.play();
 	 }
 	 
 	 private void prepareData() {
@@ -453,4 +512,92 @@ public class Home extends Application {
 
 
 	 }
+		private static List<RelacionamentoModel> listDados(String tipo, Date dtInicio, Date dtFim) {
+			List<RelacionamentoModel> relacionamentoModels = new ArrayList<RelacionamentoModel>();
+			BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
+			try {
+				if(tipo.equals("Temperatura")) {
+					List<TemperaturaModel> temperaturaModels = new ArrayList<TemperaturaModel>();
+					temperaturaModels = buscaDadosDAO.buscaTemperatura();
+					for (int i = 0; i < temperaturaModels.size(); i++) {
+						relacionamentoModels.addAll(i, temperaturaModels.get(i));						
+					}
+				} if(tipo.equals("Umidade Ar")) {
+					List<UmidadeArModel> umidadeArModels = new ArrayList<UmidadeArModel>();
+					return umidadeArModels = buscaDadosDAO.buscaUmidadeAr();					
+				} if(tipo.equals("Umidade Solo")) {
+					List<UmidadeSoloModel> umidadeSoloModels = new ArrayList<UmidadeSoloModel>();
+					return umidadeSoloModels = buscaDadosDAO.buscaUmidadeSolo();
+				}else {
+					
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+			return null;
+			
+		}
+	 
+		private static XYChart.Series chartFactory(List<HistoricoModel> dados, XYChart.Series series, String tipo) {
+			
+			final CategoryAxis xAxis = new CategoryAxis();
+		    final NumberAxis yAxis = new NumberAxis();
+		    final LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis,yAxis);
+		    lineChart.setTitle(tipo);
+		
+		    HistoricoModel model = null;
+		    DateFormat format = new SimpleDateFormat("HH:mm:ss");
+		    series.setName(tipo);
+		
+		    //populating the series with data
+		    for(int i = 0; i < dados.size(); i++) {
+		    	model = new HistoricoModel();
+		        model = dados.get(i);
+		        series.getData().add(new XYChart.Data(format.format(model.getDataAmostra()).toString(), model.getValor()));
+		    }
+		    //lineChart.getData().add(series);
+		
+		    return series;
+		
+		}
+		//Pode mudar para seriesFactory
+		private static XYChart.Series<String, Number> seriesFactory(XYChart.Series series, String tipo, Date dtInicio, Date dtFim) {
+		
+		switch (tipo) {
+		case "Temperatura":
+			XYChart.Series<String, Number> serieTemperatura = new XYChart.Series<String, Number>();
+			serieTemperatura.setName(tipo);
+		// 	tabTemperatura.setClosable(false);
+			serieTemperatura = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+			return serieTemperatura;
+		
+		case "Umidade Ar":
+			XYChart.Series<String, Number> serieUmidadeAr = new XYChart.Series<String, Number>();
+			serieUmidadeAr.setName(tipo);
+		// 	tabUmidadeAr.setClosable(false);
+			serieUmidadeAr = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+		return serieUmidadeAr;
+		
+		case "Umidade Solo":
+			XYChart.Series<String, Number> serieUmidadeSolo = new XYChart.Series<String, Number>();
+			serieUmidadeSolo.setName(tipo);
+		// 	tabUmidadeSolo.setClosable(false);
+			serieUmidadeSolo = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+		return serieUmidadeSolo;
+		
+		case "Ativações":
+			XYChart.Series<String, Number> serieAtividade = new XYChart.Series<String, Number>();
+			serieAtividade.setName(tipo);
+		// 	tabAtivacao.setClosable(false);
+			serieAtividade = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+		return serieAtividade;
+		
+		default:
+			System.out.println("Nenhuma tabela gerada!");
+		break;
+		}
+		
+		return null;
+		
+		}
 }

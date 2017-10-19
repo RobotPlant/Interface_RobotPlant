@@ -135,7 +135,7 @@ public class Historico extends Application {
 		menuBar.getMenus().addAll(file,edit,help);
 
 		Label lblStatus = new Label();
-		lblStatus.setText("Status");
+		lblStatus.setText("Status: Ok!");
 		Font font = new Font("System", 14);
 		lblStatus.setFont(font);
 		lblStatus.setLayoutX(0);
@@ -249,7 +249,12 @@ public class Historico extends Application {
 
 			 public void handle(ActionEvent event) {
 				 SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-				 lvDados.setItems(TablePop(chValue, Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue())));
+				 try {
+					 lvDados.setItems(TablePop(chValue, Date.valueOf(dpDtInicio.getValue()), Date.valueOf(dpDtFim.getValue())));					
+				} catch (Exception e) {
+					lblStatus.setText("Erro: "+ e);
+					throw new RuntimeException(e);
+				}
 
 			 }
 		 });
@@ -260,6 +265,12 @@ public class Historico extends Application {
 		btnLimpar.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
+				 try {
+					 lvDados.getItems().clear();					
+				} catch (Exception e) {
+					lblStatus.setText("Erro: "+ e);
+					throw new RuntimeException(e);
+				}
 				 
 			 }
 		 });
@@ -278,7 +289,8 @@ public class Historico extends Application {
 				 try {
 					 home.start(primaryStage);
 				 } catch (Exception e) {
-					 e.printStackTrace();
+					 lblStatus.setText("Erro: "+ e);
+					 throw new RuntimeException(e);
 				 }
 			 }
 		 });

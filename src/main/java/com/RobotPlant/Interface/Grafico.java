@@ -7,12 +7,15 @@ import java.util.List;
 
 import com.RobotPlant.JDBC.BuscaDadosDAO;
 import com.RobotPlant.Model.HistoricoModel;
+
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
@@ -20,29 +23,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Report extends Application {
-
+	public class Grafico extends Application {
+	
 	public static void main(String[] args) {
-		  launch();
-		 }
-
-	String[] tipo = null;
-
+		launch();
+	
+	}
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+	
 		AnchorPane anchorPane = new AnchorPane();
 		anchorPane.prefHeight(600);
 		anchorPane.prefWidth(800);
@@ -87,6 +85,11 @@ public class Report extends Application {
 		menuBar.setPrefSize(800, 25);
 		menuBar.setLayoutX(0);
 		menuBar.setLayoutY(0);
+		
+		ProgressBar pbStatus = new ProgressBar();
+		pbStatus.prefWidth(200);
+		pbStatus.prefHeight(30);
+		pbStatus.setPrefSize(200, 30);
 
 		Menu file = new Menu();
 		file.setText("Arquivo");
@@ -95,12 +98,7 @@ public class Report extends Application {
 		Menu help = new Menu();
 		help.setText("Ajuda");
 		menuBar.getMenus().addAll(file,edit,help);
-
-		ProgressBar pbStatus = new ProgressBar();
-		pbStatus.prefWidth(200);
-		pbStatus.prefHeight(30);
-		pbStatus.setPrefSize(200, 30);
-
+		
 		CheckBox cbTemperatura = new CheckBox();
 		cbTemperatura.setText("Temperatura");
 
@@ -119,12 +117,12 @@ public class Report extends Application {
 		DatePicker dpDtInicio = new DatePicker();
 
 		DatePicker dpDtFim = new DatePicker();
-
+		
 		Button btnBuscar = new Button();
 		btnBuscar.setText("Buscar");
 		btnBuscar.getStyleClass().setAll("btn","btn-success");
 		btnBuscar.setOnAction(new EventHandler<ActionEvent>() {
-
+		
 			@Override
 			public void handle(ActionEvent event) {
 				int index = tabPane.getTabs().lastIndexOf(null);
@@ -139,22 +137,28 @@ public class Report extends Application {
 					tabPane.getTabs().add(index, tabFactory(cbUmidadeSolo.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
 				} /*if (cbAtividade.isSelected()) {
 					index++;
-					tabPane.getTabs().add(index, tabFactory(cbAtividade.getText(), Date.valueOf(dtinicio.getValue()),Date.valueOf(dtfim.getValue())));
+					tabPane.getTabs().add(index, tabFactory(cbAtividade.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
 				}*/
-
-			}
-		 });
-
-		Button btnGerar = new Button();
-		btnGerar.setText("Gerar");
-		btnGerar.getStyleClass().setAll("btn","btn-primary");
-		btnGerar.setOnAction(new EventHandler<ActionEvent>() {
+				
+				}
+		});
+		
+		Button btnLimpar = new Button();
+		btnLimpar.setText("Limpar");
+		btnLimpar.getStyleClass().setAll("btn","btn-primary");
+		btnLimpar.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
 
+				 try {
+					 tabPane.getTabs().clear();
+				 } catch (Exception e) {
+					 e.printStackTrace();
+				 }
 			 }
 		 });
 
+		
 		Button btnVoltar = new Button();
 		btnVoltar.setText("Voltar");
 		btnVoltar.getStyleClass().setAll("btn","btn-danger");
@@ -171,14 +175,16 @@ public class Report extends Application {
 				 }
 			 }
 		 });
-
+		
+		
+		
 		cbVbox.getChildren().addAll(cbTemperatura, cbUmidadeAr, cbUmidadeSolo);
 
 		lblVbox.getChildren().addAll(lblDtInicio, lblDtFim);
 
 		dpVbox.getChildren().addAll(dpDtInicio, dpDtFim);
 
-		vBoxBtn.getChildren().addAll(btnBuscar, btnGerar, btnVoltar);
+		vBoxBtn.getChildren().addAll(btnBuscar, btnLimpar, btnVoltar);
 
 		vBoxStts.getChildren().addAll(pbStatus);
 
@@ -196,101 +202,82 @@ public class Report extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setScene(cena);
 		primaryStage.show();
-
+	
 	}
-
-	private static ObservableList<HistoricoModel> listDados(String tipo, Date dtInicio, Date dtFim) {
+	
+	private static List<HistoricoModel> listDados(String tipo, Date dtInicio, Date dtFim) {
 		List<HistoricoModel> historicoModels = new ArrayList<HistoricoModel>();
-		ObservableList<HistoricoModel> dados = FXCollections.observableArrayList();
 		BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
 		try {
 			historicoModels = buscaDadosDAO.listaDadosGrafico(historicoModels, tipo, dtInicio, dtFim);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-
-		for(int i = 0; i < historicoModels.size(); i++) {
-			dados.add(i, historicoModels.get(i));
-		}
-		return dados;
-
+		return historicoModels;
+		
 	}
-
-	@SuppressWarnings("unchecked")
-	private static TableView<HistoricoModel> tabviewFactory(ObservableList<HistoricoModel> dados) {
-
-		double size = 150;
-
-		TableView<HistoricoModel> tvDados = new TableView<HistoricoModel>();
-
-		TableColumn<HistoricoModel, Integer> tabId = new TableColumn<>("Id");
-		tabId.setPrefWidth(size);
-		tabId.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-		TableColumn<HistoricoModel, String> tabPlanta = new TableColumn<>("Amostra");
-		tabPlanta.setPrefWidth(size);
-		tabPlanta.setCellValueFactory(new PropertyValueFactory<>("planta"));
-
-		TableColumn<HistoricoModel, String> tabTipo = new TableColumn<>("Tipo");
-		tabTipo.setPrefWidth(size);
-		tabTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-
-		TableColumn<HistoricoModel, Double> tabValor = new TableColumn<>("Valor");
-		tabValor.setPrefWidth(size);
-		tabValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
-
-		TableColumn<HistoricoModel, Date> tabData = new TableColumn<>("Data / Hora");
-		tabData.setPrefWidth(size);
-		tabData.setCellValueFactory(new PropertyValueFactory<>("dataAmostra"));
-
-		tvDados.setItems(dados);
-
-		tvDados.getColumns().addAll(tabId, tabPlanta, tabTipo, tabValor, tabData);
-
-		return tvDados;
-
+	
+	
+	private static LineChart<String, Number> chartFactory(List<HistoricoModel> dados, String tipo) {
+	
+		final CategoryAxis xAxis = new CategoryAxis();
+	    final NumberAxis yAxis = new NumberAxis();
+	    final LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis,yAxis);
+	    lineChart.setTitle(tipo);
+	
+	    HistoricoModel model = null;
+	
+	    //defining a series
+	    @SuppressWarnings("rawtypes")
+		final XYChart.Series series = new XYChart.Series();
+	    series.setName(tipo);
+	
+	    //populating the series with data
+	    for(int i = 0; i < dados.size(); i++) {
+	    	model = new HistoricoModel();
+	        model = dados.get(i);
+	        series.getData().add(new XYChart.Data(model.getDataAmostra().toString(), model.getValor()));
+	    }
+	    lineChart.getData().add(series);
+	
+	    return lineChart;
+	
 	}
-
+	
 	private static Tab tabFactory(String tipo, Date dtInicio, Date dtFim) {
-		
-		ScrollPane scrollPane = new ScrollPane();
-		
-		switch (tipo) {
-		case "Temperatura":
-			Tab tabTemperatura = new Tab("Temperatura");
-//			tabTemperatura.setClosable(false);
-			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
-			tabTemperatura.setContent(scrollPane);
-			return tabTemperatura;
-
-		case "Umidade Ar":
-			Tab tabUmidadeAr = new Tab("Umidade Ar");
-//			tabUmidadeAr.setClosable(false);
-			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
-			tabUmidadeAr.setContent(scrollPane);
-			return tabUmidadeAr;
-
-		case "Umidade Solo":
-			Tab tabUmidadeSolo = new Tab("Umidade Solo");
-//			tabUmidadeSolo.setClosable(false);
-			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
-			tabUmidadeSolo.setContent(scrollPane);
-			return tabUmidadeSolo;
-
-		case "Ativações":
-			Tab tabAtivacao = new Tab("Ativações");
-//			tabAtivacao.setClosable(false);
-			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
-			tabAtivacao.setContent(scrollPane);
-			return tabAtivacao;
-
-		default:
-			System.out.println("Nenhuma tabela gerada!");
-			break;
-		}
-
-		return null;
-
+	
+	switch (tipo) {
+	case "Temperatura":
+		Tab tabTemperatura = new Tab("Temperatura");
+	// 	tabTemperatura.setClosable(false);
+		tabTemperatura.setContent(chartFactory(listDados(tipo, dtInicio, dtFim), tipo));
+		return tabTemperatura;
+	
+	case "Umidade Ar":
+		Tab tabUmidadeAr = new Tab("Umidade Ar");
+	// 	tabUmidadeAr.setClosable(false);
+		tabUmidadeAr.setContent(chartFactory(listDados(tipo, dtInicio, dtFim), tipo));
+	return tabUmidadeAr;
+	
+	case "Umidade Solo":
+		Tab tabUmidadeSolo = new Tab("Umidade Solo");
+	// 	tabUmidadeSolo.setClosable(false);
+		tabUmidadeSolo.setContent(chartFactory(listDados(tipo, dtInicio, dtFim), tipo));
+	return tabUmidadeSolo;
+	
+	case "Ativações":
+		Tab tabAtivacao = new Tab("Ativações");
+	// 	tabAtivacao.setClosable(false);
+		tabAtivacao.setContent(chartFactory(listDados(tipo, dtInicio, dtFim), tipo));
+	return tabAtivacao;
+	
+	default:
+		System.out.println("Nenhuma tabela gerada!");
+	break;
+	}
+	
+	return null;
+	
 	}
 
 }

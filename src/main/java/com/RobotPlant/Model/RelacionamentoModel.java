@@ -13,59 +13,47 @@ public class RelacionamentoModel implements Serializable {
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	private int 	id;
-	private String	tipo;
-	private Double	valor;
-	private Date	hora;
-
+	private TemperaturaModel temperaturaModel;
+	private UmidadeArModel umidadeArModel;
+	private UmidadeSoloModel umidadeSoloModel;
 	public RelacionamentoModel() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
-	
-	public RelacionamentoModel(int id, String tipo, Double valor, Date hora) {
+	public RelacionamentoModel(TemperaturaModel temperaturaModel, UmidadeArModel umidadeArModel,
+			UmidadeSoloModel umidadeSoloModel) {
 		super();
-		this.id = id;
-		this.tipo = tipo;
-		this.valor = valor;
-		this.hora = hora;
+		this.temperaturaModel = temperaturaModel;
+		this.umidadeArModel = umidadeArModel;
+		this.umidadeSoloModel = umidadeSoloModel;
 	}
-	
-	public int getId() {
-		return id;
+	public TemperaturaModel getTemperaturaModel() {
+		return temperaturaModel;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setTemperaturaModel(TemperaturaModel temperaturaModel) {
+		this.temperaturaModel = temperaturaModel;
 	}
-	public String getTipo() {
-		return tipo;
+	public UmidadeArModel getUmidadeArModel() {
+		return umidadeArModel;
 	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setUmidadeArModel(UmidadeArModel umidadeArModel) {
+		this.umidadeArModel = umidadeArModel;
 	}
-	public Double getValor() {
-		return valor;
+	public UmidadeSoloModel getUmidadeSoloModel() {
+		return umidadeSoloModel;
 	}
-	public void setValor(Double valor) {
-		this.valor = valor;
+	public void setUmidadeSoloModel(UmidadeSoloModel umidadeSoloModel) {
+		this.umidadeSoloModel = umidadeSoloModel;
 	}
-	public Date getHora() {
-		return hora;
-	}
-	public void setHora(Date hora) {
-		this.hora = hora;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((hora == null) ? 0 : hora.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
-		result = prime * result + ((valor == null) ? 0 : valor.hashCode());
+		result = prime * result + ((temperaturaModel == null) ? 0 : temperaturaModel.hashCode());
+		result = prime * result + ((umidadeArModel == null) ? 0 : umidadeArModel.hashCode());
+		result = prime * result + ((umidadeSoloModel == null) ? 0 : umidadeSoloModel.hashCode());
 		return result;
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -75,41 +63,35 @@ public class RelacionamentoModel implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		RelacionamentoModel other = (RelacionamentoModel) obj;
-		if (hora == null) {
-			if (other.hora != null)
+		if (temperaturaModel == null) {
+			if (other.temperaturaModel != null)
 				return false;
-		} else if (!hora.equals(other.hora))
+		} else if (!temperaturaModel.equals(other.temperaturaModel))
 			return false;
-		if (id != other.id)
-			return false;
-		if (tipo == null) {
-			if (other.tipo != null)
+		if (umidadeArModel == null) {
+			if (other.umidadeArModel != null)
 				return false;
-		} else if (!tipo.equals(other.tipo))
+		} else if (!umidadeArModel.equals(other.umidadeArModel))
 			return false;
-		if (valor == null) {
-			if (other.valor != null)
+		if (umidadeSoloModel == null) {
+			if (other.umidadeSoloModel != null)
 				return false;
-		} else if (!valor.equals(other.valor))
+		} else if (!umidadeSoloModel.equals(other.umidadeSoloModel))
 			return false;
 		return true;
 	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("TesteDados [id=");
-		builder.append(id);
-		builder.append(", tipo=");
-		builder.append(tipo);
-		builder.append(", valor=");
-		builder.append(valor);
-		builder.append(", hora=");
-		builder.append(hora);
+		builder.append("RelacionamentoModel [temperaturaModel=");
+		builder.append(temperaturaModel);
+		builder.append(", umidadeArModel=");
+		builder.append(umidadeArModel);
+		builder.append(", umidadeSoloModel=");
+		builder.append(umidadeSoloModel);
 		builder.append("]");
 		return builder.toString();
 	}
-
-
-
+	
+	
 }

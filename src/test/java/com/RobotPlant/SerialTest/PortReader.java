@@ -103,7 +103,7 @@ import jssc.SerialPortEventListener;
 	            modeloTeste.setTempvalue(valor);
 	            try {
 	            	Thread.sleep(1000);
-					dadosDAO.insertDados(nome, valor);
+					dadosDAO.insertDados(nome.toLowerCase(), valor);
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -113,7 +113,7 @@ import jssc.SerialPortEventListener;
 	            modeloTeste.setSoloValue(valor);
 	            try {
 	            	Thread.sleep(1000);
-					dadosDAO.insertDados(nome, valor);
+					dadosDAO.insertDados(nome.toLowerCase(), valor);
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -123,12 +123,12 @@ import jssc.SerialPortEventListener;
 	            modeloTeste.setArValue(valor);
 	            try {
 	            	Thread.sleep(1000);
-					dadosDAO.insertDados(nome, valor);
+					dadosDAO.insertDados(nome.toLowerCase(), valor);
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
 	    	} else {
-	    		System.out.println("String inv·lida!!!");
+	    		System.out.println("String inv√°lida!!!");
 	    	}
 	    	strbuff = new StringBuffer("");
 	    }
