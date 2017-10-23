@@ -40,7 +40,7 @@ public class ReportsFactory {
     private static void exportReport(JasperPrint print) {
 
         try {
-            JasperExportManager.exportReportToPdfFile(print, "c:/Relatorio.pdf");
+            JasperExportManager.exportReportToPdfFile(print, "/home/joaojunior/Relatorio.pdf");
         } catch (JRException e) {
             throw new RuntimeException(e);
         }

@@ -1,4 +1,4 @@
-package com.RobotPlant.Interface;
+package com.RobotPlant.CharTest;
 
 import javafx.animation.*;
 import javafx.application.Application;

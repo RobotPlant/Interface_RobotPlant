@@ -151,7 +151,7 @@ public class BuscaDadosDAO {
     }
 
 
-    public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> data, String tipo, Date dtInicio, Date dtFim) throws SQLException {
+    public ObservableList<HistoricoModel> listaDados(ObservableList<HistoricoModel> historicoModels, String tipo, Date dtInicio, Date dtFim) throws SQLException {
 
         HistoricoModel historicoModel = null;
         PreparedStatement stmt = null;
@@ -173,7 +173,7 @@ public class BuscaDadosDAO {
                 historicoModel.setValor(rs.getDouble(values.get(3)));
                 historicoModel.setPlanta(rs.getString(values.get(1)));
                 historicoModel.setDataAmostra(rs.getDate(values.get(4)));
-                data.add(historicoModel);
+                historicoModels.add(historicoModel);
             }
             stmt.close();
             rs.close();
@@ -182,10 +182,10 @@ public class BuscaDadosDAO {
         } finally {
             conn.close();
         }
-        return data;
+        return historicoModels;
     }
 
-	public List<HistoricoModel> listaDadosGrafico(List<HistoricoModel> data, String tipo, Date dtInicio, Date dtFim) throws SQLException {
+	public List<HistoricoModel> listaDadosGrafico(List<HistoricoModel> historicoModels, String tipo, Date dtInicio, Date dtFim) throws SQLException {
 		HistoricoModel historicoModel = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -206,7 +206,7 @@ public class BuscaDadosDAO {
                 historicoModel.setValor(rs.getDouble(values.get(3)));
                 historicoModel.setPlanta(rs.getString(values.get(1)));
                 historicoModel.setDataAmostra(rs.getDate(values.get(4)));
-                data.add(historicoModel);
+                historicoModels.add(historicoModel);
             }
             stmt.close();
             rs.close();
@@ -215,6 +215,38 @@ public class BuscaDadosDAO {
         } finally {
             conn.close();
         }
-        return data;
+        return historicoModels;
 	}
+	public List<HistoricoModel> listaDadosGraficoHome(List<HistoricoModel> historicoModels, String tipo) throws SQLException {
+		HistoricoModel historicoModel = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        QuerysModel qmodel = new QuerysModel();
+        StringBuilder sql = new StringBuilder();
+        List<String> values = new ArrayList<String>();
+        values = qmodel.selectQueryGrafico(tipo);
+        sql.append(values.get(0));
+        try {
+            stmt = conn.prepareStatement(sql.toString());
+            rs = stmt.executeQuery();
+            while(rs.next()) {
+                historicoModel = new HistoricoModel();
+                historicoModel.setId(rs.getInt(values.get(2)));
+                historicoModel.setTipo(tipo);
+                historicoModel.setValor(rs.getDouble(values.get(3)));
+                historicoModel.setPlanta(rs.getString(values.get(1)));
+                this.calendario.setTime(rs.getTimestamp(values.get(4)));
+                historicoModel.setDataAmostra(this.calendario.getTime());
+                historicoModels.add(historicoModel);
+            }
+            stmt.close();
+            rs.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            conn.close();
+        }
+        return historicoModels;
+	}
+
 }

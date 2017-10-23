@@ -1,4 +1,4 @@
-package com.RobotPlant.SerialTest;
+package com.RobotPlant.ArduinoUtil;
 
 
 import java.sql.SQLException;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.RobotPlant.JDBC.InsereDadosDAO;
+import com.RobotPlant.SerialTest.ModeloTeste;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

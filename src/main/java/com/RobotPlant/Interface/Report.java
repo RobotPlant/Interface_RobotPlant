@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.RobotPlant.JDBC.BuscaDadosDAO;
+import com.RobotPlant.JRUtil.ReportsFactory;
 import com.RobotPlant.Model.HistoricoModel;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -100,6 +103,8 @@ public class Report extends Application {
 		pbStatus.prefWidth(200);
 		pbStatus.prefHeight(30);
 		pbStatus.setPrefSize(200, 30);
+		
+		
 
 		CheckBox cbTemperatura = new CheckBox();
 		cbTemperatura.setText("Temperatura");
@@ -141,6 +146,27 @@ public class Report extends Application {
 					index++;
 					tabPane.getTabs().add(index, tabFactory(cbAtividade.getText(), Date.valueOf(dtinicio.getValue()),Date.valueOf(dtfim.getValue())));
 				}*/
+				Service service = new Service() {
+		            @Override
+		            protected Task createTask() {
+		                return new Task() {
+		                    @Override
+		                    protected Object call() throws Exception {
+		                        for(int i=0; i<100; i++){
+		                            updateProgress(i, 100);
+		                            try {
+		                                Thread.sleep(100);
+		                            } catch (InterruptedException e) {
+		                                e.printStackTrace();
+		                            }
+		                        }
+		                        return null;
+		                    }
+		                };
+		            }
+		        };
+		        pbStatus.progressProperty().bind(service.progressProperty());
+		        service.start();
 
 			}
 		 });
@@ -151,7 +177,12 @@ public class Report extends Application {
 		btnGerar.setOnAction(new EventHandler<ActionEvent>() {
 
 			 public void handle(ActionEvent event) {
-
+				 ReportsFactory reportsFactory = new ReportsFactory();
+				 String caminho = null;
+				 String pkg;
+				 caminho = this.getClass().getClassLoader().getResource("").getPath();
+				 pkg = caminho+"com/RobotPlant/JRUtil/reports/";
+				 reportsFactory.createReport(pkg, "Temperatura.jrxml");
 			 }
 		 });
 

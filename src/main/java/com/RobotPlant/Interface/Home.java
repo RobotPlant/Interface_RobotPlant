@@ -18,12 +18,13 @@ import java.util.logging.Logger;
 import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 import com.RobotPlant.ArduinoUtil.ArduinoSC;
+import com.RobotPlant.CharTest.ChartGrid;
 import com.RobotPlant.JDBC.BuscaDadosDAO;
 import com.RobotPlant.Model.HistoricoModel;
-import com.RobotPlant.Model.RelacionamentoModel;
 import com.RobotPlant.Model.TemperaturaModel;
 import com.RobotPlant.Model.UmidadeArModel;
 import com.RobotPlant.Model.UmidadeSoloModel;
+import com.RobotPlant.ArduinoUtil.SerialPortCom;
 import com.google.zxing.client.result.VCardResultParser;
 
 import javafx.animation.KeyFrame;
@@ -33,6 +34,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -78,13 +80,12 @@ public class Home extends Application {
 	UmidadeArModel arModel = new UmidadeArModel();
 	UmidadeSoloModel soloModel = new UmidadeSoloModel();
 
-
 	 public static void main(String[] args) {
 	  launch();
 	 }
 
 	 @SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
+	 @Override
 	 public void start(final Stage palco) throws Exception {
 
 		 TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
@@ -148,7 +149,7 @@ public class Home extends Application {
 		 lineChart.getData().addAll(seriesTemperatura, seriesUmidadeAr, seriesUmidadeSolo);
 
 
-		 ChartGrid chartGrid = new ChartGrid();
+		// ChartGrid chartGrid = new ChartGrid();
 		 final Pos pos = null;
 		 lineChart.setOnMouseClicked(new EventHandler<MouseEvent>() {
 	          public void handle(MouseEvent t) {
@@ -182,11 +183,16 @@ public class Home extends Application {
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
 			 //Deve-se alterar para receber uma lista dos dados da porta serial
 			 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				 System.out.println(newValue);
-				 arduinoSC.DisconectaArduino();
-				 arduinoSC.SerialConnection(newValue, series1);
-
-				 Animation(lineChart, series1, arduinoSC.SerialConnection(newValue, series1));
+				 dados.isSelected();
+				 SerialPortCom serialPortCom = new SerialPortCom();
+				 try {
+					 ObservableList<String> arduinoDados = FXCollections.observableArrayList();
+					 serialPortCom.initialize(comboBoxPorts.getPromptText().toString(), arduinoDados);
+					 lvDados.setItems(arduinoDados);
+				} catch (Exception e) {
+					throw new RuntimeException(e); 
+				}
+				 Animation(lineChart, seriesTemperatura, arduinoSC.SerialConnection(newValue, seriesTemperatura));
 
 			 }
 		 });
@@ -232,12 +238,12 @@ public class Home extends Application {
 		 
 		 Timeline animation = new Timeline();
 		 animation.getKeyFrames()
-		 .add(new KeyFrame(Duration.millis(100000), new EventHandler<ActionEvent>() {
+		 .add(new KeyFrame(Duration.millis(10000), new EventHandler<ActionEvent>() {
 			 
 			 public void handle(ActionEvent actionEvent) {
 				 i++;
 				 DateFormat format = new SimpleDateFormat("HH:mm:ss");
-				 try {
+				 
 					 if(cbTemperatura.isSelected()) {
 						 seriesFactory(seriesTemperatura, cbTemperatura.getText());
 					 } if(cbUmidadeAr.isSelected()) {
@@ -245,12 +251,7 @@ public class Home extends Application {
 					 } if(cbUmidadeSolo.isSelected()) {
 						 seriesFactory(seriesUmidadeSolo, cbUmidadeSolo.getText());
 					 }
-					 
-					 
-					 
-					 
-					 
-					/* if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
+					 /* if (new BuscaDadosDAO().verificaId(i,"temperatura")) {
 						 temperaturaModel = new BuscaDadosDAO().buscaTemperatura(i);
 						 series1.getData().add(new XYChart.Data<String, Number>(format.format(temperaturaModel.getTemperaturaData()).toString(), temperaturaModel.getTemperaturaValor()));
 					 } if (new BuscaDadosDAO().verificaId(i,"umidade_ar")) {
@@ -261,19 +262,16 @@ public class Home extends Application {
 						 series3.getData().add(new XYChart.Data<String, Number>(format.format(soloModel.getUmidadeSoloData()).toString(), soloModel.getUmidadeSoloValor()));
 					 } else {
 						 i=1;
-					 }*/
-				 } catch (SQLException e) {
-					 e.printStackTrace();
-				 }/*
-				 if (series1.getData().size() > 30) {
-					 series1.getData().remove(0);
+					 }*/				  
+				 if (seriesTemperatura.getData().size() > 30) {
+					 seriesTemperatura.getData().remove(0);
 				 }
-				 if (series2.getData().size() > 30) {
-					 series2.getData().remove(0);
+				 if (seriesUmidadeAr.getData().size() > 30) {
+					 seriesUmidadeAr.getData().remove(0);
 				 }
-				 if (series3.getData().size() > 30) {
-					 series3.getData().remove(0);
-				 }*/
+				 if (seriesUmidadeSolo.getData().size() > 30) {
+					 seriesUmidadeSolo.getData().remove(0);
+				 }
 			 }
 		 }));
 		 
@@ -453,7 +451,7 @@ public class Home extends Application {
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void Animation(LineChart lineChart, final XYChart.Series series1, final int group[]) {
 
-		//Apply Animating Data in Charts
+		 //Apply Animating Data in Charts
 	        //ref: http://docs.oracle.com/javafx/2/charts/bar-chart.htm
 	        //"Animating Data in Charts" section
 
@@ -512,22 +510,23 @@ public class Home extends Application {
 
 
 	 }
-		private static List<RelacionamentoModel> listDados(String tipo, Date dtInicio, Date dtFim) {
-			List<RelacionamentoModel> relacionamentoModels = new ArrayList<RelacionamentoModel>();
+		private static List<HistoricoModel> listDados(String tipo) {
+			List<HistoricoModel> historicoModels = new ArrayList<HistoricoModel>();
 			BuscaDadosDAO buscaDadosDAO = new BuscaDadosDAO();
 			try {
 				if(tipo.equals("Temperatura")) {
-					List<TemperaturaModel> temperaturaModels = new ArrayList<TemperaturaModel>();
-					temperaturaModels = buscaDadosDAO.buscaTemperatura();
-					for (int i = 0; i < temperaturaModels.size(); i++) {
-						relacionamentoModels.addAll(i, temperaturaModels.get(i));						
-					}
+					HistoricoModel historicoModel = null;
+					historicoModels = buscaDadosDAO.listaDadosGraficoHome(historicoModels,tipo);
+					return historicoModels;
 				} if(tipo.equals("Umidade Ar")) {
-					List<UmidadeArModel> umidadeArModels = new ArrayList<UmidadeArModel>();
-					return umidadeArModels = buscaDadosDAO.buscaUmidadeAr();					
+					HistoricoModel historicoModel = null;
+					historicoModels = buscaDadosDAO.listaDadosGraficoHome(historicoModels, tipo);
+
+					return historicoModels;
 				} if(tipo.equals("Umidade Solo")) {
-					List<UmidadeSoloModel> umidadeSoloModels = new ArrayList<UmidadeSoloModel>();
-					return umidadeSoloModels = buscaDadosDAO.buscaUmidadeSolo();
+					HistoricoModel historicoModel = null;
+					historicoModels = buscaDadosDAO.listaDadosGraficoHome(historicoModels, tipo);
+					return historicoModels;
 				}else {
 					
 				}
@@ -538,22 +537,22 @@ public class Home extends Application {
 			
 		}
 	 
-		private static XYChart.Series chartFactory(List<HistoricoModel> dados, XYChart.Series series, String tipo) {
+		private static XYChart.Series chartFactory(List<HistoricoModel> historicoModels, XYChart.Series series, String tipo) {
 			
 			final CategoryAxis xAxis = new CategoryAxis();
 		    final NumberAxis yAxis = new NumberAxis();
 		    final LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis,yAxis);
 		    lineChart.setTitle(tipo);
 		
-		    HistoricoModel model = null;
+		    HistoricoModel historicoModel = null;
 		    DateFormat format = new SimpleDateFormat("HH:mm:ss");
 		    series.setName(tipo);
 		
 		    //populating the series with data
-		    for(int i = 0; i < dados.size(); i++) {
-		    	model = new HistoricoModel();
-		        model = dados.get(i);
-		        series.getData().add(new XYChart.Data(format.format(model.getDataAmostra()).toString(), model.getValor()));
+		    for(int i = 0; i < historicoModels.size(); i++) {
+		    	historicoModel = new HistoricoModel();
+		    	historicoModel = historicoModels.get(i);
+		        series.getData().add(new XYChart.Data(format.format(historicoModel.getDataAmostra()).toString(), historicoModel.getValor()));
 		    }
 		    //lineChart.getData().add(series);
 		
@@ -561,35 +560,35 @@ public class Home extends Application {
 		
 		}
 		//Pode mudar para seriesFactory
-		private static XYChart.Series<String, Number> seriesFactory(XYChart.Series series, String tipo, Date dtInicio, Date dtFim) {
+		private static XYChart.Series<String, Number> seriesFactory(XYChart.Series series, String tipo) {
 		
 		switch (tipo) {
 		case "Temperatura":
 			XYChart.Series<String, Number> serieTemperatura = new XYChart.Series<String, Number>();
 			serieTemperatura.setName(tipo);
 		// 	tabTemperatura.setClosable(false);
-			serieTemperatura = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+			serieTemperatura = (chartFactory(listDados(tipo), series, tipo));
 			return serieTemperatura;
 		
 		case "Umidade Ar":
 			XYChart.Series<String, Number> serieUmidadeAr = new XYChart.Series<String, Number>();
 			serieUmidadeAr.setName(tipo);
 		// 	tabUmidadeAr.setClosable(false);
-			serieUmidadeAr = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+			serieUmidadeAr = (chartFactory(listDados(tipo), series, tipo));
 		return serieUmidadeAr;
 		
 		case "Umidade Solo":
 			XYChart.Series<String, Number> serieUmidadeSolo = new XYChart.Series<String, Number>();
 			serieUmidadeSolo.setName(tipo);
 		// 	tabUmidadeSolo.setClosable(false);
-			serieUmidadeSolo = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+			serieUmidadeSolo = (chartFactory(listDados(tipo), series, tipo));
 		return serieUmidadeSolo;
 		
 		case "Ativações":
 			XYChart.Series<String, Number> serieAtividade = new XYChart.Series<String, Number>();
 			serieAtividade.setName(tipo);
 		// 	tabAtivacao.setClosable(false);
-			serieAtividade = (chartFactory(listDados(tipo, dtInicio, dtFim), series, tipo));
+			serieAtividade = (chartFactory(listDados(tipo), series, tipo));
 		return serieAtividade;
 		
 		default:
@@ -599,5 +598,9 @@ public class Home extends Application {
 		
 		return null;
 		
+		}
+		
+		private static void listviewFactory() {
+			
 		}
 }

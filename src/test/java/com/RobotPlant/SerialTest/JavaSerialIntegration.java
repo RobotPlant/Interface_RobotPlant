@@ -18,7 +18,7 @@ public class JavaSerialIntegration {
         String port = ports[selectedPort - 1];
 
         System.out.println("You will use the port: " + port);
-        serialPortCom.initialize(port);
+   //     serialPortCom.initialize(port);
         System.out.println("Sending A....");
         // Send text A
         serialPortCom.sendData("A");

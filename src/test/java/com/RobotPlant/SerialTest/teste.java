@@ -1,6 +1,8 @@
 package com.RobotPlant.SerialTest;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,10 +37,10 @@ public class teste {
 
 	public static void main(String[] args) {
 
-		UmidadeArModel ar = new UmidadeArModel();
+		List<UmidadeArModel> ar = new ArrayList<>();
 
 		try {
-			ar = new BuscaDadosDAO().buscaUmidadeAr(3);
+			ar = new BuscaDadosDAO().buscaUmidadeAr();
 			System.out.println(ar.toString());
 		} catch (SQLException e) {
 			e.printStackTrace();

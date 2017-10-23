@@ -1,5 +1,5 @@
 
-package com.RobotPlant.SerialTest;
+package com.RobotPlant.ArduinoUtil;
 
 import javafx.collections.ObservableList;
 import jssc.SerialPort;

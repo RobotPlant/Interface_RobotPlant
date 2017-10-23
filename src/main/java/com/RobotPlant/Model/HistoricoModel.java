@@ -1,6 +1,6 @@
 package com.RobotPlant.Model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class HistoricoModel {
 
