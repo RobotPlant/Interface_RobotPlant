@@ -32,22 +32,17 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Libs/log4j.jar"/>
 	<classpathentry kind="lib" path="Libs/bootstrapfx-core-0.2.1.jar"/>
 	<classpathentry kind="lib" path="Libs/com.mysql.jdbc_5.1.5.jar"/>
 	<classpathentry kind="lib" path="Libs/jssc-2.8.0.jar"/>
-	<classpathentry kind="lib" path="Libs/mysql-connector-java-5.1.42-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="Libs/mail-1.5.0-b01.jar"/>
-	<classpathentry kind="lib" path="Libs/axis.jar"/>
 	<classpathentry kind="lib" path="Libs/commons-beanutils-1.9.3.jar"/>
 	<classpathentry kind="lib" path="Libs/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="Libs/commons-digester-2.1.jar"/>
 	<classpathentry kind="lib" path="Libs/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="Libs/itext-2.1.7.jar"/>
-	<classpathentry kind="lib" path="Libs/itext-pdfa-5.4.0.jar"/>
 	<classpathentry kind="lib" path="Libs/itextpdf-5.1.0.jar"/>
-	<classpathentry kind="lib" path="Libs/jasperreports-6.4.1.jar"/>
 	<classpathentry kind="lib" path="Libs/jasperreports-chart-customizers-6.4.1.jar"/>
 	<classpathentry kind="lib" path="Libs/jasperreports-chart-themes-6.4.1.jar"/>
 	<classpathentry kind="lib" path="Libs/jasperreports-fonts-6.4.1.jar"/>
@@ -57,9 +52,9 @@
 	<classpathentry kind="lib" path="Libs/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="Libs/joda-time-2.0.jar"/>
 	<classpathentry kind="lib" path="Libs/Medusa-7.9.jar"/>
-	<classpathentry kind="lib" path="Libs/ojdbc14-10.2.0.2.0.jar"/>
 	<classpathentry kind="lib" path="Libs/org.springframework.beans_3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="Libs/org.springframework.core-3.0.4.release.jar"/>
-	<classpathentry kind="lib" path="Libs/saaj.jar"/>
+	<classpathentry kind="lib" path="Libs/jasperreports-6.4.1.jar"/>
+	<classpathentry kind="lib" path="Libs/mysql-connector-java-5.1.42-bin.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

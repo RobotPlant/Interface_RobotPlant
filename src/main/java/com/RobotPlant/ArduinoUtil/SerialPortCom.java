@@ -1,6 +1,7 @@
 
 package com.RobotPlant.ArduinoUtil;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -11,7 +12,9 @@ import jssc.SerialPortList;
 
 
 	    public ObservableList<String> initialize(String serialPortName, ObservableList<String> arduinoDados) throws Exception {
-
+	    	
+	    	System.out.println(serialPortName);
+	    	
 	        serialPort = new SerialPort(serialPortName);
 
 	        serialPort.openPort();
@@ -36,9 +39,18 @@ import jssc.SerialPortList;
 	        }
 	    }
 
-	    public String[] getAvailableSerialPorts() {
-	        String[] ports = SerialPortList.getPortNames();
-	        return ports;
+	    public ObservableList<String> getAvailableSerialPorts() {
+
+	    	ObservableList<String> portList = FXCollections.observableArrayList();
+	    	String[] serialPortNames = SerialPortList.getPortNames();
+
+	    	for(String name: serialPortNames) {
+	    		System.out.println(name);
+	    		portList.add(name);
+	    	}
+
+	    	return portList;
+	    	
 	    }
 
 	}

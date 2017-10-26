@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.RobotPlant.JDBC.InsereDadosDAO;
-import com.RobotPlant.SerialTest.ModeloTeste;
+import com.RobotPlant.Model.SerialDadosModel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,10 +26,10 @@ import jssc.SerialPortEventListener;
 		String [] valor = new String[6];
 		Double [] dado = new Double[6];
 		StringBuffer strbuff = new StringBuffer("");
-		ModeloTeste modeloTeste = new ModeloTeste();
+		SerialDadosModel serialDadosModel = new SerialDadosModel();
 		InsereDadosDAO dadosDAO = new InsereDadosDAO();
 
-		List<ModeloTeste> modeloTestes = new ArrayList<ModeloTeste>();
+		List<SerialDadosModel> modeloTestes = new ArrayList<SerialDadosModel>();
 		
 		ObservableList<String> arduinoDados = FXCollections.observableArrayList();
 
@@ -55,11 +55,7 @@ import jssc.SerialPortEventListener;
 
 	            	Thread.sleep(100);
 	            	System.out.println(strbuff.toString());
-	            	if(!arduinoDados.isEmpty()) {
-	            		arduinoDados.clear();
-	            	} else {
-	            		System.out.println(arduinoDados.get(0) + arduinoDados.get(1));
-	            	}
+
 	                if(strbuff.toString().equals("Temperatura:") || strbuff.toString().equals("Umidade_solo:")
 	                		|| strbuff.toString().equals("Umidade_ar:")) {
 
@@ -111,37 +107,34 @@ import jssc.SerialPortEventListener;
 	    public void verificaValor(String nome, Double valor) {
 
 	    	if (nome.equals("Temperatura")) {
-	    		modeloTeste.setTemperatura(nome);
-	            modeloTeste.setTempvalue(valor);
+	    		serialDadosModel.setTemperatura(nome);
+	    		serialDadosModel.setTempvalue(valor);
 	            try {
 	            	Thread.sleep(1000);
+	            	arduinoDados.addAll(new String(nome+" "+String.valueOf(valor)));
 					dadosDAO.insertDados(nome.toLowerCase(), valor);
-					arduinoDados.add(0, nome);
-					arduinoDados.add(1, String.valueOf(valor));
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
 
 	    	} else if (nome.equals("Umidade_solo")) {
-	    		modeloTeste.setUmidadeSolo(nome);
-	            modeloTeste.setSoloValue(valor);
+	    		serialDadosModel.setUmidadeSolo(nome);
+	    		serialDadosModel.setSoloValue(valor);
 	            try {
 	            	Thread.sleep(1000);
+	            	arduinoDados.addAll(new String(nome+" "+String.valueOf(valor)));
 					dadosDAO.insertDados(nome.toLowerCase(), valor);
-					arduinoDados.add(0, nome);
-					arduinoDados.add(1, String.valueOf(valor));
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}
 
 	    	} else if (nome.equals("Umidade_ar")) {
-	    		modeloTeste.setUmidadeAr(nome);
-	            modeloTeste.setArValue(valor);
+	    		serialDadosModel.setUmidadeAr(nome);
+	    		serialDadosModel.setArValue(valor);
 	            try {
 	            	Thread.sleep(1000);
+	            	arduinoDados.addAll(new String(nome+" "+String.valueOf(valor)));
 					dadosDAO.insertDados(nome.toLowerCase(), valor);
-					arduinoDados.add(0, nome);
-					arduinoDados.add(1, String.valueOf(valor));
 				} catch (SQLException | InterruptedException e) {
 					e.printStackTrace();
 				}

@@ -25,7 +25,7 @@ import com.RobotPlant.Model.TemperaturaModel;
 import com.RobotPlant.Model.UmidadeArModel;
 import com.RobotPlant.Model.UmidadeSoloModel;
 import com.RobotPlant.ArduinoUtil.SerialPortCom;
-import com.google.zxing.client.result.VCardResultParser;
+
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -35,6 +35,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -123,7 +124,6 @@ public class Home extends Application {
 		 grafico.setText("Gráfico");
 		 grafico.closableProperty().set(false);
 
-		 ListView<String> lvDados = new ListView<String>();
 
 		 prepareData();  //Seta os valores do array para 0
 
@@ -174,28 +174,36 @@ public class Home extends Application {
 		 help.setText("Ajuda");
 		 menuBar.getMenus().addAll(file,edit,help);
 
-		 final ArduinoSC arduinoSC = new ArduinoSC();
-		 arduinoSC.DetectaPorta();
-		 final ComboBox comboBoxPorts = new ComboBox(arduinoSC.DetectaPorta());
+		 //final ArduinoSC arduinoSC = new ArduinoSC();
+		 //arduinoSC.DetectaPorta();
+		 SerialPortCom serialPortCom = new SerialPortCom();
+		 ObservableList<String> arduinoDados = FXCollections.observableArrayList();
+		 final ComboBox comboBoxPorts = new ComboBox(serialPortCom.getAvailableSerialPorts());
 		 comboBoxPorts.setPromptText("Porta");
 		 comboBoxPorts.setLayoutX(350);
 		 comboBoxPorts.setLayoutY(470);
 		 comboBoxPorts.valueProperty().addListener(new ChangeListener<String>() {
 			 //Deve-se alterar para receber uma lista dos dados da porta serial
 			 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				 dados.isSelected();
-				 SerialPortCom serialPortCom = new SerialPortCom();
+				 dados.getContent();
 				 try {
-					 ObservableList<String> arduinoDados = FXCollections.observableArrayList();
-					 serialPortCom.initialize(comboBoxPorts.getPromptText().toString(), arduinoDados);
-					 lvDados.setItems(arduinoDados);
+					 serialPortCom.initialize(newValue, arduinoDados);
 				} catch (Exception e) {
 					throw new RuntimeException(e); 
 				}
-				 Animation(lineChart, seriesTemperatura, arduinoSC.SerialConnection(newValue, seriesTemperatura));
+				 //Animation(lineChart, seriesTemperatura, arduinoSC.SerialConnection(newValue, seriesTemperatura));
 
 			 }
 		 });
+		 ListView<String> lvDados = new ListView<String>();
+		 arduinoDados.addListener(new ListChangeListener<String>() {
+
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends String> c) {
+				System.out.println("Mudança: "+c);
+					lvDados.setItems(arduinoDados);
+			}
+		 });				
 		 
 		 CheckBox cbTemperatura = new CheckBox("Temperatura");
 		 cbTemperatura.setSelected(true);
@@ -272,6 +280,7 @@ public class Home extends Application {
 				 if (seriesUmidadeSolo.getData().size() > 30) {
 					 seriesUmidadeSolo.getData().remove(0);
 				 }
+				 animation.stop();
 			 }
 		 }));
 		 

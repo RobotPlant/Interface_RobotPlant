@@ -65,18 +65,8 @@
 	</dependency>
 	<dependency>
 	    <groupId>com.itextpdf</groupId>
-	    <artifactId>itext-pdfa</artifactId>
-	    <version>5.5.4</version>
-	</dependency>
-	<dependency>
-	    <groupId>com.itextpdf</groupId>
 	    <artifactId>itext-asian</artifactId>
 	    <version>5.1.0</version>
-	</dependency>
-	<dependency>
-	    <groupId>net.sf.jasperreports</groupId>
-	    <artifactId>jasperreports</artifactId>
-	    <version>6.4.1</version>
 	</dependency>
 	<dependency>
 	    <groupId>org.jfree</groupId>
@@ -103,11 +93,6 @@
 	  <groupId>org.gillius</groupId>
 	  <artifactId>jfxutils</artifactId>
 	  <version>1.0</version>
-	</dependency>
-	<dependency>
-	    <groupId>eu.hansolo</groupId>
-	    <artifactId>Medusa</artifactId>
-	    <version>7.9</version>
 	</dependency>
 	<dependency>
         <groupId>com.oracle</groupId>
