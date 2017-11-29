@@ -25,7 +25,7 @@ import jssc.SerialPortException;
 import jssc.SerialPortList;
 
 public class ArduinoConnection extends Application {
-		  //semaforo arduino e jfx
+
 		    Circle cl_1, cl_2, cl_3;
 		    ObservableList<String> nomes = FXCollections.observableArrayList();
 		    ListView<String> listview = new ListView<String>(nomes);
@@ -55,8 +55,7 @@ public class ArduinoConnection extends Application {
 		        cl_2 = new Circle(25);
 		        cl_3 = new Circle(25);
 
-		         //Property().bind(cl_1.layoutYProperty());
-		         //vb1.prefHeightProperty().bind(cl_1.layoutXProperty());
+
 
 		        cl_1.setFill(Color.GREEN);
 		        cl_2.setFill(Color.YELLOW);
@@ -92,7 +91,7 @@ public class ArduinoConnection extends Application {
 		        vb3.layoutXProperty().bind(vb1.layoutXProperty());
 		        vb3.layoutYProperty().bind(stage.heightProperty().subtract(105));
 
-		        //método para ler porta assim que é selecionado no listview.
+
 		        listview.getSelectionModel().selectedItemProperty().addListener(
 		                (ObservableValue<? extends String> ov, String old_val,
 		                        String new_val) -> {
@@ -151,7 +150,6 @@ public class ArduinoConnection extends Application {
 
 		            }
 		        });
-		//x)
 		    btOne.setOnAction((ActionEvent event) ->{
 		        if (cb1.isSelected()) {
 		            vl_circles = "a";

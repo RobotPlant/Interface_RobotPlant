@@ -1,5 +1,6 @@
 package com.RobotPlant.Interface;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,7 +8,13 @@ import java.util.List;
 
 import com.RobotPlant.JDBC.BuscaDadosDAO;
 import com.RobotPlant.JRUtil.ReportsFactory;
+import com.RobotPlant.JRUtil.ThreadUtil;
+import com.RobotPlant.JRUtil.Model.JRRelatorioModel;
+import com.RobotPlant.JRUtil.dao.JRTemperaturaDao;
+import com.RobotPlant.JRUtil.dao.JRUmidadeArDao;
+import com.RobotPlant.JRUtil.dao.JRUmidadeSoloDao;
 import com.RobotPlant.Model.HistoricoModel;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,6 +49,12 @@ public class Report extends Application {
 		 }
 
 	String[] tipo = null;
+
+	private static List<JRRelatorioModel> jrRelatorioModel = new ArrayList<>();
+
+	private Thread thread = null;
+	private ThreadUtil runnable = null;
+
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -103,8 +116,6 @@ public class Report extends Application {
 		pbStatus.prefWidth(200);
 		pbStatus.prefHeight(30);
 		pbStatus.setPrefSize(200, 30);
-		
-		
 
 		CheckBox cbTemperatura = new CheckBox();
 		cbTemperatura.setText("Temperatura");
@@ -135,39 +146,29 @@ public class Report extends Application {
 				int index = tabPane.getTabs().lastIndexOf(null);
 				if(cbTemperatura.isSelected()) {
 					index++;
-					tabPane.getTabs().add(index, tabFactory(cbTemperatura.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					try {
+						tabPane.getTabs().add(index, tabFactory(cbTemperatura.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} if(cbUmidadeAr.isSelected()) {
 					index++;
-					tabPane.getTabs().add(index, tabFactory(cbUmidadeAr.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					try {
+						tabPane.getTabs().add(index, tabFactory(cbUmidadeAr.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} if (cbUmidadeSolo.isSelected()) {
 					index++;
-					tabPane.getTabs().add(index, tabFactory(cbUmidadeSolo.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					try {
+						tabPane.getTabs().add(index, tabFactory(cbUmidadeSolo.getText(), Date.valueOf(dpDtInicio.getValue()),Date.valueOf(dpDtFim.getValue())));
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} /*if (cbAtividade.isSelected()) {
 					index++;
 					tabPane.getTabs().add(index, tabFactory(cbAtividade.getText(), Date.valueOf(dtinicio.getValue()),Date.valueOf(dtfim.getValue())));
 				}*/
-				Service service = new Service() {
-		            @Override
-		            protected Task createTask() {
-		                return new Task() {
-		                    @Override
-		                    protected Object call() throws Exception {
-		                        for(int i=0; i<100; i++){
-		                            updateProgress(i, 100);
-		                            try {
-		                                Thread.sleep(100);
-		                            } catch (InterruptedException e) {
-		                                e.printStackTrace();
-		                            }
-		                        }
-		                        return null;
-		                    }
-		                };
-		            }
-		        };
-		        pbStatus.progressProperty().bind(service.progressProperty());
-		        service.start();
-
 			}
 		 });
 
@@ -178,11 +179,10 @@ public class Report extends Application {
 
 			 public void handle(ActionEvent event) {
 				 ReportsFactory reportsFactory = new ReportsFactory();
-				 String caminho = null;
 				 String pkg;
-				 caminho = this.getClass().getClassLoader().getResource("").getPath();
-				 pkg = caminho+"com/RobotPlant/JRUtil/reports/";
-				 reportsFactory.createReport(pkg, "Temperatura.jrxml");
+				 pkg = this.getClass().getClassLoader().getResource("").getPath()+"com/RobotPlant/JRUtil/reports/RelatorioBase.jasper";
+				 File caminho = new File(pkg);
+				 reportsFactory.createReport(caminho, jrRelatorioModel);
 			 }
 		 });
 
@@ -244,7 +244,6 @@ public class Report extends Application {
 			dados.add(i, historicoModels.get(i));
 		}
 		return dados;
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -282,15 +281,18 @@ public class Report extends Application {
 
 	}
 
-	private static Tab tabFactory(String tipo, Date dtInicio, Date dtFim) {
-		
+	private static Tab tabFactory(String tipo, Date dtInicio, Date dtFim) throws SQLException {
+
 		ScrollPane scrollPane = new ScrollPane();
-		
+		JRRelatorioModel relatorio = new JRRelatorioModel();
+
 		switch (tipo) {
 		case "Temperatura":
 			Tab tabTemperatura = new Tab("Temperatura");
 //			tabTemperatura.setClosable(false);
 			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
+			relatorio.setTemperaturaModels(new JRTemperaturaDao().buscaTemperatura(dtInicio, dtFim));
+			jrRelatorioModel.add(relatorio);
 			tabTemperatura.setContent(scrollPane);
 			return tabTemperatura;
 
@@ -298,6 +300,8 @@ public class Report extends Application {
 			Tab tabUmidadeAr = new Tab("Umidade Ar");
 //			tabUmidadeAr.setClosable(false);
 			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
+			relatorio.setUmidadeArModels(new JRUmidadeArDao().buscaUmidadeAr(dtInicio, dtFim));
+			jrRelatorioModel.add(relatorio);
 			tabUmidadeAr.setContent(scrollPane);
 			return tabUmidadeAr;
 
@@ -305,6 +309,8 @@ public class Report extends Application {
 			Tab tabUmidadeSolo = new Tab("Umidade Solo");
 //			tabUmidadeSolo.setClosable(false);
 			scrollPane.setContent(tabviewFactory(listDados(tipo, dtInicio, dtFim)));
+			relatorio.setUmidadeSoloModels(new JRUmidadeSoloDao().buscaUmidadeSolo(dtInicio, dtFim));
+			jrRelatorioModel.add(relatorio);
 			tabUmidadeSolo.setContent(scrollPane);
 			return tabUmidadeSolo;
 
@@ -322,6 +328,21 @@ public class Report extends Application {
 
 		return null;
 
+	}
+
+	public void setProcessando(boolean b) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void iniciarImportacao() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public boolean isProcessando() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

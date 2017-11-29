@@ -13,7 +13,7 @@ public class InsereDadosDAO {
 	private Connection conn = new Conexaodb().getConnection();
 
 	@SuppressWarnings({ "static-access", "deprecation" })
-	public void insertDados(String idPlanta, String tipo, Double valor) throws SQLException {
+	public void insertDados(String tipo, Double valor) throws SQLException {
 		PreparedStatement stmt = null;
 		String query = null;
 		query = new QuerysModel().selectQueryInsertDados(tipo);

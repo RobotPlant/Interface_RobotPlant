@@ -16,4 +16,18 @@ public class Conexaodb {
 	     }
 	 }
 
+	public boolean isConnected() {
+		Connection conn = getConnection();
+		if(conn == null) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	private void lerXml() {
+
+	}
+
 }

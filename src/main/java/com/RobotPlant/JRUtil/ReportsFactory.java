@@ -1,7 +1,10 @@
 package com.RobotPlant.JRUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.RobotPlant.JRUtil.Model.JRRelatorioModel;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -15,12 +18,11 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class ReportsFactory {
 
-    public void createReport(String caminho, String nomeArquivo) {
-        List<Object> lista = new ArrayList<>();
+    public void createReport(File caminho, List<JRRelatorioModel> jrRelatorioModel) {
         try {
-            JasperPrint print = JasperFillManager.fillReport(ReportsFactory.compilePath(caminho, nomeArquivo), null, new JRBeanCollectionDataSource(lista));
+            JasperPrint print = JasperFillManager.fillReport(caminho.getPath(), null, new JRBeanCollectionDataSource(jrRelatorioModel));
             ReportsFactory.exportReport(print);
-            ReportsFactory.viewReport(print);
+  //          ReportsFactory.viewReport(print);
         } catch (JRException e) {
             throw new RuntimeException(e);
         }
@@ -40,7 +42,7 @@ public class ReportsFactory {
     private static void exportReport(JasperPrint print) {
 
         try {
-            JasperExportManager.exportReportToPdfFile(print, "/home/joaojunior/Relatorio.pdf");
+            JasperExportManager.exportReportToPdfFile(print, "C://Relatorio.pdf");
         } catch (JRException e) {
             throw new RuntimeException(e);
         }

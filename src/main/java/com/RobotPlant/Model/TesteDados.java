@@ -6,7 +6,7 @@ import java.sql.Time;
 public class TesteDados implements Serializable {
 
 	/**
-	 * @author 14208 - João Luiz Gadelha Dias Junior;
+	 * @author 14208 - Joao Luiz Gadelha Dias Junior;
 	 * @category JavaBean;
 	 * @since 2017
 	 */
